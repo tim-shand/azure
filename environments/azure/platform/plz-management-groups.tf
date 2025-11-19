@@ -17,7 +17,7 @@ resource "azurerm_management_group" "mg_org_platform" {
 }
 
 resource "azurerm_management_group" "mg_org_workload" {
-  display_name = "Workload"
+  display_name = "Workloads"
   name         = "${var.naming["prefix"]}-workload-mg"
   parent_management_group_id = azurerm_management_group.mg_org_core.id
 }
