@@ -19,8 +19,3 @@ variable "plz_management_groups" {
     subscription_ids  = optional(list(string), [])
   }))
 }
-
-variable "subscription_ids_plz" {
-  description = "List of subscription IDs to add to Platform management group."
-  type        = list(string)
-}
