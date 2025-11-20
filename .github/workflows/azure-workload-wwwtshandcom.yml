@@ -102,7 +102,7 @@ jobs:
         timeout-minutes: 5  # This step will fail if it runs longer than 'x' minutes.
         run: |
           terraform plan -out=terraform.tfplan -var-file=terraform.tfvars \
-          -var-file=cloudflare.tfvars
+          -var-file=cloudflare.tfvars \
           -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
           -var="github_pat=$GH_PAT_TOKEN"
         
@@ -117,6 +117,6 @@ jobs:
         timeout-minutes: 15 # Fail if it runs longer than 'x' minutes.
         run: |
           terraform destroy --auto-approve -var-file=terraform.tfvars \
-          -var-file=cloudflare.tfvars
+          -var-file=cloudflare.tfvars \
           -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
           -var="github_pat=$GH_PAT_TOKEN"
