@@ -16,6 +16,7 @@ variable "plz_management_groups" {
   description = "Map of management groups to create."
   type = map(object({ # Use object name as 'name'.
     mg_display_name = string
+    subscription_ids  = optional(list(string), [])
   }))
 }
 

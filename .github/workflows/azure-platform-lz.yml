@@ -84,10 +84,11 @@ jobs:
       - name: Terraform Plan
         if: env.RUN_PLAN == 'true'
         timeout-minutes: 5  # This step will fail if it runs longer than 'x' minutes.
+        # -var="subscription_ids_plz=[\"$ARM_SUBSCRIPTION_ID\",\"$ARM_SUBSCRIPTION_ID_IAC\"]"
         run: |
           terraform plan -out=terraform.tfplan -var-file=terraform.tfvars \
           -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
-          -var="subscription_ids_plz=[\"$ARM_SUBSCRIPTION_ID\",\"$ARM_SUBSCRIPTION_ID_IAC\"]"
+          -var='plz_management_groups.platform.subscription_ids=["'"$ARM_SUBSCRIPTION_ID"'","'"$ARM_PLATFORM_SUBSCRIPTION_ID"'"]'
         
       - name: Terraform Apply
         if: env.RUN_APPLY == 'true'

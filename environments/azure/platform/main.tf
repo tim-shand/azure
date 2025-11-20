@@ -7,7 +7,6 @@
 module "plz-gov-management-groups" {
   source = "../../../modules/azure/plz-gov-management-groups"
   plz_management_groups = var.plz_management_groups
-  subscription_ids_plz  = var.subscription_ids_plz
   naming                = var.naming
 }
 
