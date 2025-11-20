@@ -35,8 +35,8 @@ permissions:
   issues: read
 
 jobs:
-  deploy-swa-wwwtshandcom:
-    name: Deploy - Web App [wwwtshandcom] (Azure)
+  deploy_infra_swa_wwwtshandcom:
+    name: "Deploy: Infra - WebApp [wwwtshandcom] (Azure)"
     runs-on: ubuntu-latest
     timeout-minutes: 10  # The entire job will fail if it runs longer than 'x' minutes.
     environment: azure-workload-wwwtshandcom # Name of the Github environment.
