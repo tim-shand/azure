@@ -3,7 +3,7 @@
 # All secrets are stored securely in Github Secrets or environment variables.
 
 # General / Azure
-location = "newzealandnorth"
+location = "westus2" # SWA is limited regions for free-tier.
 naming = {
     prefix = "tjs" # Short name of organization ("abc").
     platform = "app" # Platform name for related resources ("mgt", "plz").
