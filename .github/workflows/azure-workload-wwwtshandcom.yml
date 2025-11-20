@@ -88,9 +88,6 @@ jobs:
           -backend-config="key=$TF_BACKEND_KEY" \
           -backend-config="subscription_id=$ARM_SUBSCRIPTION_ID_IAC"
 
-      - name: Setup Cloudflare Config for Terraform
-        run: echo "cloudflare_config={\"zone_id\":\"$CLOUDFLARE_ZONE_ID\",\"zone_token\":\"$CLOUDFLARE_ZONE_TOKEN\"}" >> $CLOUDFLARE_CONFIG
-
       - name: Terraform Plan
         if: env.RUN_PLAN == 'true'
         timeout-minutes: 5  # This step will fail if it runs longer than 'x' minutes.
@@ -98,7 +95,7 @@ jobs:
           terraform plan -out=terraform.tfplan -var-file=terraform.tfvars \
           -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
           -var="github_pat="$GH_PAT_TOKEN" \
-          -var="cloudflare_config=$CLOUDFLARE_CONFIG"
+          -var="cloudflare_config={\"zone_id\":\"$CLOUDFLARE_ZONE_ID\",\"zone_token\":\"$CLOUDFLARE_ZONE_TOKEN\"}"
         
       - name: Terraform Apply
         if: env.RUN_APPLY == 'true'
@@ -113,4 +110,4 @@ jobs:
           terraform destroy --auto-approve -var-file=terraform.tfvars \
           -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
           -var="github_pat="$GH_PAT_TOKEN" \
-          -var="cloudflare_config=$CLOUDFLARE_CONFIG"
+          -var="cloudflare_config={\"zone_id\":\"$CLOUDFLARE_ZONE_ID\",\"zone_token\":\"$CLOUDFLARE_ZONE_TOKEN\"}"
