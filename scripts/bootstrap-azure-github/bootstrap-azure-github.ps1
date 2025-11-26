@@ -282,6 +282,17 @@ if (!($Destroy)) {
         exit 1
     }
 
+    <### TO DO ###
+
+    - Get outputs from plan somehow to display and prompt to create (run apply).
+    - Finish 'apply' section. 
+    - Clear out GitHub and Azure for testing new bootstrap process. 
+    - Delete old bootstrap files from repo. 
+    - Revisit IaC vending process to remove sub IDs from repo code base. 
+
+    #>
+    
+
     # # Terraform: Apply
     # if(Test-Path -Path "$workingDir/bootstrap.tfplan"){
     #     Write-Host ""
