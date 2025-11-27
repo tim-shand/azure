@@ -23,15 +23,15 @@ Bootstrap script to prepare Azure tenant for management via Terraform and GitHub
   - Add created Azure resource details for IaC backend as repository variables.
 
 # USAGE:
-./scripts/bootstrap-azure-github/bootstrap-azure-github.ps1 -EnvFile "env.psd1"
-./scripts/bootstrap-azure-github/bootstrap-azure-github.ps1 -EnvFile "env.psd1" -Destroy
+./scripts/bootstrap-azure-github/bootstrap-azure-github.ps1 -EnvFile "env.psd1" -Action Create/Remove
 #=======================================================#>
 
 # SCRIPT VARIABLES =============================================#
 # Command line input parameters.
 param(
-    [switch]$Destroy, # Add switch parameter for delete option.
-    [Parameter(Mandatory = $true)][string]$EnvFile
+    #[switch]$Action = , # Add switch parameter for delete option.
+    [Parameter(Mandatory = $true)][string]$EnvFile,
+    [Parameter(Mandatory = $true)][ValidateSet("Create", "Remove")][string]$Action
 )
 
 # Required applications and validation commands.
@@ -48,9 +48,11 @@ $requiredApps = @(
         Command     = "gh"; 
         AuthCheck   = "gh api user | ConvertFrom-JSON"; 
         LoginCmd    = "gh auth login";
-        AccessCheck = '(gh api /repos/$($config.GitHub.Owner)/$($config.GitHub.Repo)/collaborators/$($ghSession.login)/permission | ConvertFrom-JSON)'
+        AccessCheck = '(gh api /repos/$($config.GitHub.Owner)/$($config.GitHub.Repo)/collaborators/$($config.GitHub.Owner)/permission | ConvertFrom-JSON).user.permissions'
     }
 )
+# Set direcotry for Terraform files.
+$tfDir = "$PSScriptRoot/terraform"
 
 # Terminal Colours.
 $INF = "Green"
@@ -60,7 +62,7 @@ $HD1 = "Cyan"
 $HD2 = "Magenta"
 
 # Determine request action and populate hashtable for logging purposes.
-if ($destroy) {
+if ($Action -eq "Remove") {
     $sys_action = @{
         do      = "Remove"
         past    = "Removed"
@@ -186,13 +188,13 @@ Write-Host ""
 Write-Host -ForegroundColor $HD1 "GitHub: " -NoNewLine; Write-Host -ForegroundColor Yellow "(User: $($ghSession.login))"
 Write-Host "- Owner/Org: $(($ghSession.html_url).Replace('https://github.com/',''))"
 Write-Host "- Repository: $($config.GitHub.Repo) [$($config.GitHub.Branch)]"
-Write-Host "- Access: $(($test.PSObject.Properties | Where-Object {$_.Value -eq $true} | ForEach-Object {$_.Name}) -join ", ")"
+Write-Host "- Access: $(($ghAccess.PSObject.Properties | Where-Object {$_.Value -eq $true} | ForEach-Object {$_.Name}) -join ", ")"
 Write-Host ""
 Write-Host -ForegroundColor $HD1 "Deployment Action: " -NoNewLine; 
 Write-Host -ForegroundColor $sys_action.colour "$($sys_action.do) $($sys_action.symbol)"
 Write-Host -ForegroundColor $HD1 "Please ensure the above details are correct before proceeding."
 Write-Host ""
-if (!(Get-UserConfirm -prompt "Do you wish to proceed with 'Terraform Plan' stage [Y/N]?")) {
+if (!(Get-UserConfirm -prompt "Do you wish to proceed [Y/N]?")) {
     Write-Host -ForegroundColor $WRN "[!] WARNING: User declined to proceed. Exit."
     exit 1
 }
@@ -201,8 +203,9 @@ if (!(Get-UserConfirm -prompt "Do you wish to proceed with 'Terraform Plan' stag
 # MAIN: Stage 3 - Prepare Terraform
 #================================================#
 
-# Generate TFVARS file.
-$tfVARS = @"
+if (!($Action -eq "Remove")) {
+    # Generate TFVARS file.
+    $tfVARS = @"
 # SAFE TO COMMIT
 # This file contains only non-sensitive configuration data (no credentials or secrets).
 # All secrets are to be stored securely in GitHub Secrets or environment variables.
@@ -235,22 +238,23 @@ github_config = {
 }
 "@
 
-# Write out TFVARS file (only if not already exists,offer to overwrite existing).
-if (-not (Test-Path -Path "$PSScriptRoot/terraform/bootstrap.tfvars") ) {
-    $tfVARS | Out-File -Encoding utf8 -FilePath "$PSScriptRoot/terraform/bootstrap.tfvars" -Force
-}
-else {
-    Write-Host ""
-    Write-Host -ForegroundColor $WRN "[!] WARNING: An existing TFVARS file is present."
-    if (Get-UserConfirm -prompt "Do you wish to replace the existing file (Y) or keep original (N) [Y/N]?") {
+    # Write out TFVARS file (only if not already exists,offer to overwrite existing).
+    if (! (Test-Path -Path "$PSScriptRoot/terraform/bootstrap.tfvars") ) {
         $tfVARS | Out-File -Encoding utf8 -FilePath "$PSScriptRoot/terraform/bootstrap.tfvars" -Force
+    }
+    else {
+        Write-Host ""
+        Write-Host -ForegroundColor $WRN "[!] WARNING: An existing TFVARS file is present."
+        if (Get-UserConfirm -prompt "Do you wish to replace the existing file (Y) or keep original (N) [Y/N]?") {
+            $tfVARS | Out-File -Encoding utf8 -FilePath "$PSScriptRoot/terraform/bootstrap.tfvars" -Force
+        }
     }
 }
 
 # Terraform: Initialize
 Write-Host ""
 Write-Host -ForegroundColor $HD1 "[*] Performing Action: Initialize Terraform configuration... " -NoNewLine
-if (terraform -chdir="$PSScriptRoot/terraform" init -upgrade) {
+if (terraform -chdir="$($tfDir)" init -upgrade) {
     Write-Host -ForegroundColor $INF "PASS"
 }
 else {
@@ -260,64 +264,131 @@ else {
 }
 
 #===================================================#
-# MAIN: Stage 4 - Execute Terraform (Deploy/Destroy)
+# MAIN: Stage 4 - Execute Terraform (Deploy/Remove)
 #===================================================#
 
-if (!($Destroy)) {
-    # CREATE
-
+if ($Action -eq "Remove") {
+    # Check for local file (download from remote storage and place in Terraform directory).
+    Write-Host -ForegroundColor $HD1 "[*] Checking for local state file... " -NoNewline
+    if (Test-Path -Path "$tfDir/*.tfstate") {
+        Rename-Item -Path "$tfDir/*.tfstate" -NewName "$tfDir/terraform.tfstate"
+        Write-Host -ForegroundColor $INF "PASS"
+        terraform -chdir="$($tfDir)" destroy `
+            -var-file="bootstrap.tfvars" `
+            -var="subscription_id_iac=$($config.Azure.SubscriptionIAC)"
+    }
+    else {
+        Write-Host -ForegroundColor $ERR "FAIL"
+        Write-Host -ForegroundColor $ERR "[x] Local state file is missing. Please download from remote storage and try again." 
+    }
+}
+else {
     # Terraform: Plan
     Write-Host ""
-    Write-Host -ForegroundColor $HD1 "[*] Performing Action: Running Terraform plan... "
-    if (terraform -chdir="$PSScriptRoot/terraform" plan --out=bootstrap.plan `
+    Write-Host -ForegroundColor $HD1 "[*] Performing Action: Running Terraform plan... " -NoNewLine
+    if (terraform -chdir="$($tfDir)" plan --out=bootstrap.plan `
             -var-file="bootstrap.tfvars" `
             -var="subscription_id_iac=$($config.Azure.SubscriptionIAC)"
     ) {
         Write-Host -ForegroundColor $INF "PASS" 
-        terraform -chdir="$PSScriptRoot/terraform" show bootstrap.plan
+        terraform -chdir="$($tfDir)" show bootstrap.plan
     }
     else {
         Write-Host -ForegroundColor $ERR "FAIL" 
         Write-Host -ForegroundColor $ERR "[x] ERROR: Terraform plan failed. Please check configuration and try again."
         exit 1
     }
-
-    <### TO DO ###
-
-    - Get outputs from plan somehow to display and prompt to create (run apply).
-    - Finish 'apply' section. 
-    - Clear out GitHub and Azure for testing new bootstrap process. 
-    - Delete old bootstrap files from repo. 
-    - Revisit IaC vending process to remove sub IDs from repo code base. 
-
-    #>
     
-
-    # # Terraform: Apply
-    # if(Test-Path -Path "$workingDir/bootstrap.tfplan"){
-    #     Write-Host ""
-    #     Write-Log -Level "WRN" -Message "Terraform will now deploy resources. This may take several minutes to complete."
-    #     if(-not (Get-UserConfirm) ){
-    #         Write-Log -Level "ERR" -Message "User aborted process. Please confirm intended configuration and try again."
-    #         exit 1
-    #     }
-    #     else{
-    #         Write-Log -Level "SYS" -Message "Performing Action: Running Terraform apply... "
-    #         if(terraform -chdir="$($workingDir)" apply bootstrap.tfplan){
-    #             Write-Host "PASS" -ForegroundColor Green
-    #         } else{
-    #             Write-Host "FAIL" -ForegroundColor Red
-    #             Write-Log -Level "ERR" -Message "- Terraform plan failed. Please check configuration and try again."
-    #             exit 1
-    #         }
-    #     }
-    # } else{
-    #     Write-Log -Level "ERR" -Message "- Terraform plan file missing! Please check configuration and try again."
-    #     exit 1  
-    # }
-
+    # Terraform: Apply
+    Write-Host ""
+    if (Test-Path -Path "$PSScriptRoot/terraform/bootstrap.plan") {
+        Write-Host -ForegroundColor $WRN "[!] Terraform will now deploy changes. This may take several minutes to complete."
+        if (!(Get-UserConfirm -prompt "Do you wish to proceed [Y/N]?") ) {
+            Write-Host -ForegroundColor $ERR "[x] ERROR: User aborted process. Please confirm intended configuration and try again."
+            exit 1
+        }
+        else {
+            Write-Host -ForegroundColor $HD1 "[*] Performing Action: Running Terraform apply... "
+            Try {
+                terraform -chdir="$($tfDir)" apply bootstrap.plan
+            }
+            Catch {
+                Write-Host "FAIL" -ForegroundColor $ERR
+                Write-Host -ForegroundColor $ERR "[x] Terraform plan failed. Please check configuration and try again. $_"
+                exit 1
+            }
+        }
+    }
+    else {
+        Write-Host -ForegroundColor $ERR "[x] Terraform plan file missing! Please check configuration and try again."
+        exit 1  
+    }
 }
-else {
-    # DESTROY
 
+#================================================#
+# MAIN: Stage 5 - Migrate State to Azure
+#================================================#
+
+if (!($Action -eq "Remove")) {
+    # Get Github variables from Terraform output.
+    Write-Host -ForegroundColor $HD1 "[*] Retrieving Terraform backend details from output... " -NoNewLine
+    Try {
+        $tf_rg = terraform -chdir="$($tfDir)" output -raw out_bootstrap_iac_rg
+        $tf_sa = terraform -chdir="$($tfDir)" output -raw out_bootstrap_iac_sa
+        $tf_cn = terraform -chdir="$($tfDir)" output -raw out_bootstrap_iac_cn
+        Write-Host -ForegroundColor $INF "PASS"
+        Write-Host ""
+        Write-Host "- Resource Group: $tf_rg"
+        Write-Host "- Storage Account: $tf_sa"
+        Write-Host "- Blob Continer: $tf_cn"
+    }
+    Catch {
+        Write-Host -ForegroundColor $ERR "FAIL"
+        Write-Host -ForegroundColor $ERR "[x] Failed to get Terraform output values. Please check configuration and try again."
+        exit 1
+    }
+
+    # Generate backend config for state migration.
+    $tfBackend = `
+        @"
+terraform {
+  backend "azurerm" {
+    resource_group_name  = "$($tf_rg)"
+    storage_account_name = "$($tf_sa)"
+    container_name       = "$($tf_cn)"
+    key                  = "azure-bootstrap.tfstate"
+  }
 }
+"@
+    $tfBackend | Out-File -Encoding utf8 -FilePath "$PSScriptRoot/terraform/backend.tf" -Force
+
+    # Terraform: Migrate State
+    Write-Host -ForegroundColor $WRN "[!] Terraform will now migrate state to Azure... "
+    if (Get-UserConfirm -prompt "Do you wish to proceed [Y/N]?") {
+        Write-Host ""
+        Write-Host -ForegroundColor $HD1 "[*] Migrating Terraform state to Azure... " -NoNewline
+        if (terraform -chdir="$($tfDir)" init -migrate-state -force-copy -input=false) {
+            Write-Host -ForegroundColor $INF "PASS"
+        }
+        else {
+            Write-Host -ForegroundColor $ERR "FAIL"
+            Write-Host -ForegroundColor $ERR "[x] Failed to migrate Terraform state to Azure. Please check configuration and try again."
+        }
+    }
+    else {
+        Write-Host -ForegroundColor $WRN "[!] Terraform state migration aborted by user."
+        exit 1
+    }
+}
+
+#================================================#
+# MAIN: Stage 6 - Clean Up
+#================================================#
+Remove-Item -Path "$PSScriptRoot/terraform/backend.tf" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$PSScriptRoot/terraform/bootstrap.plan" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$PSScriptRoot/terraform/.terraform*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$PSScriptRoot/terraform/.terraform.*" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$PSScriptRoot/terraform/*.tfstate*" -Force -ErrorAction SilentlyContinue
+Write-Host ""
+Write-Host -ForegroundColor $HD1 "===== COMPLETE ====="
+Write-Host ""
