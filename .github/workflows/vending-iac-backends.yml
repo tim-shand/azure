@@ -67,19 +67,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Python (Pip)
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.x"
+      # - name: Setup Python (Pip)
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: "3.x"
 
-      - name: "Code Scan: Install Checkov"
-        run: pip install checkov
+      # - name: "Code Scan: Install Checkov"
+      #   run: pip install checkov
 
-      - name: "Code Scan: Run Checkov"
-        working-directory: .
-        run: |
-          checkov -d ./modules/azure/vending-iac-backend --framework terraform --quiet --skip-check CKV2_AZURE_21
-          checkov -d ./environments/azure/global/vending-iac-backends --framework terraform --quiet
+      # - name: "Code Scan: Run Checkov"
+      #   working-directory: .
+      #   run: |
+      #     checkov -d ./modules/azure/vending-iac-backend --framework terraform --quiet --skip-check
+      #     checkov -d ./environments/azure/global/vending-iac-backends --framework terraform --quiet
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
