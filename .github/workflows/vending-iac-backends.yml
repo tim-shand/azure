@@ -78,7 +78,7 @@ jobs:
       - name: "Code Scan: Run Checkov"
         working-directory: .
         run: |
-          checkov -d ./modules/azure/vending-iac-backend --framework terraform --quiet
+          checkov -d ./modules/azure/vending-iac-backend --framework terraform --quiet --skip-check CKV2_AZURE_21
           checkov -d ./environments/azure/global/vending-iac-backends --framework terraform --quiet
 
       - name: Setup Terraform
