@@ -63,12 +63,6 @@ jobs:
       RUN_APPLY: ${{ github.event.inputs.tf_action == 'Plan-Apply' }}
       RUN_DESTROY: ${{ github.event.inputs.tf_action == 'Destroy' }}
 
-    strategy: # Use a matrix to iterate through relevant repo directories for Checkov scan.
-      matrix:
-        checkov_dirs: # Any custom name.
-          - "./modules/azure/vending-iac-backend"
-          - "./environments/azure/global/vending-iac-backends"
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -82,8 +76,10 @@ jobs:
         run: pip install checkov
 
       - name: "Code Scan: Run Checkov"
+        working-directory: .
         run: |
-          checkov -d ${{ matrix.checkov_dirs }} --framework terraform --quiet
+          checkov -d ./modules/azure/vending-iac-backend --framework terraform --quiet
+          checkov -d ./environments/azure/global/vending-iac-backends --framework terraform --quiet
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
