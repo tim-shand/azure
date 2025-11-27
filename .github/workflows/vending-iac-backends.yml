@@ -63,20 +63,38 @@ jobs:
       RUN_APPLY: ${{ github.event.inputs.tf_action == 'Plan-Apply' }}
       RUN_DESTROY: ${{ github.event.inputs.tf_action == 'Destroy' }}
 
+    strategy: # Use a matrix to iterate through relevant repo directories for Checkov scan.
+      matrix:
+        checkov_dirs: # Any custom name.
+          - "./modules/azure/vending-iac-backend"
+          - "./environments/azure/global/vending-iac-backends"
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: "Code Scan: Run Checkov (Terraform)"
-        uses: bridgecrewio/checkov-action@v12 
+      - name: Setup Python (Pip)
+        uses: actions/setup-python@v4
         with:
-          directory: | # Use current working dir set by "working-directory".
-            environments/azure/global/vending-iac-backends
-            modules/azure/vending-iac-backend
-          framework: terraform # Optional: Run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
-          quiet: true # Optional: Display only failed checks
-          soft_fail: false # Optional: Do not return an error code if there are failed checks
-          log_level: WARNING # Optional: Set log level. Default WARNING
+          python-version: "3.x"
+
+      - name: "Code Scan: Install Checkov"
+        run: pip install checkov
+
+      - name: "Code Scan: Run Checkov"
+        run: |
+          checkov -d ${{ matrix.checkov_dirs }} --framework terraform --quiet --soft-fail false --log-level WARNING
+
+      # - name: "Code Scan: Run Checkov (Terraform)"
+      #   uses: bridgecrewio/checkov-action@v12 
+      #   with:
+      #     directory: |
+      #       environments/azure/global/vending-iac-backends
+      #       modules/azure/vending-iac-backend
+      #     framework: terraform # Optional: Run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
+      #     quiet: true # Optional: Display only failed checks
+      #     soft_fail: false # Optional: Do not return an error code if there are failed checks
+      #     log_level: WARNING # Optional: Set log level. Default WARNING
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
