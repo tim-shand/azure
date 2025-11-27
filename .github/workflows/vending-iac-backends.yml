@@ -83,18 +83,7 @@ jobs:
 
       - name: "Code Scan: Run Checkov"
         run: |
-          checkov -d ${{ matrix.checkov_dirs }} --framework terraform --quiet --soft-fail false --log-level WARNING
-
-      # - name: "Code Scan: Run Checkov (Terraform)"
-      #   uses: bridgecrewio/checkov-action@v12 
-      #   with:
-      #     directory: |
-      #       environments/azure/global/vending-iac-backends
-      #       modules/azure/vending-iac-backend
-      #     framework: terraform # Optional: Run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
-      #     quiet: true # Optional: Display only failed checks
-      #     soft_fail: false # Optional: Do not return an error code if there are failed checks
-      #     log_level: WARNING # Optional: Set log level. Default WARNING
+          checkov -d ${{ matrix.checkov_dirs }} --framework terraform --quiet
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
