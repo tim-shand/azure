@@ -23,18 +23,18 @@ on:
 
   push: # Commits
     paths:
-      - "environments/azure/workloads/swa-wwwtshandcom"
+      - "environments/azure/workloads/swa-wwwtshandcom/**"
       - ".github/workflows/azure-swa-wwwtshandcom.yml"
-      - "modules/azure/swa-webapp-basic-dns"
+      - "modules/azure/swa-webapp-basic-dns/**"
     branches:
       - main
       - dev*
   
   pull_request: # PR
     paths:
-      - "environments/azure/workloads/swa-wwwtshandcom"
+      - "environments/azure/workloads/swa-wwwtshandcom/**"
       - ".github/workflows/azure-swa-wwwtshandcom.yml"
-      - "modules/azure/swa-webapp-basic-dns"
+      - "modules/azure/swa-webapp-basic-dns/**"
     branches:
       - main
 

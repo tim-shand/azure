@@ -6,6 +6,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "~> 4.0"
     }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = "~> 3.5.0"
+    }
     # OPTIONAL: Used for Cloudflare resources (DNS, domains, etc).
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -22,7 +26,7 @@ terraform {
 # Provider configurations.
 provider "azurerm" {
   features {}
-  tenant_id       = data.azurerm_client_config.current.tenant_id # Get tenant from current session.
+  tenant_id       = data.azuread_client_config.current.tenant_id # Get tenant from current session.
   subscription_id = var.subscription_id                          # Target subscription for resources. 
 }
 
@@ -31,4 +35,4 @@ provider "cloudflare" {
 }
 
 data "azurerm_subscription" "current" {}  # Get current Azure CLI subscription. 
-data "azurerm_client_config" "current" {} # Get current Azure session information. 
+data "azuread_client_config" "current" {} # Get current Azure session information. 
