@@ -42,6 +42,8 @@ backend.conf
 # Allow example or default TFVARS file.
 !example.tfvars
 !terraform.tfvars
+!env-dev.tfvars
+!env-prd.tfvars
 
 # Ignore override files as they are usually used to override resources locally.
 override.tf
