@@ -1,0 +1,16 @@
+# SAFE TO COMMIT
+# This file contains only non-sensitive configuration data (no credentials or secrets).
+# All secrets are stored securely in Github Secrets or environment variables.
+
+# General / Azure
+location = "westus2" # SWA is limited regions for free-tier.
+tier     = "Free"
+naming = {
+  prefix  = "tjs"          # Short name of organization ("abc").
+  service = "web"          # Service name used in the project ("iac", "mgt", "sec").
+  project = "wwwtshandcom" # Project name for related resources ("platform", "webapp01").
+}
+tags = {
+  Project = "PersonalWebsite" # Name of the project the resources are for.
+  Owner   = "CloudOps"        # Team responsible for the resources.
+}

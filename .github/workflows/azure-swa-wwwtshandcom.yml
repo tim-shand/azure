@@ -13,13 +13,12 @@ on:
           - "Plan-Apply"
           - "Destroy"
       deploy_env:
-        description: "Environment: dev, tst, prd"
+        description: "Environment: dev, prd"
         required: true
         default: "dev"
         type: choice
         options:
           - "dev"
-          - "tst"
           - "prd"
 
   push: # Commits
@@ -45,10 +44,10 @@ permissions:
 
 jobs:
   deploy_infra_swa_wwwtshandcom:
-    name: "Deploy: Infra - WebApp [wwwtshandcom] (Azure)"
+    name: "Deploy: Infra - StaticWebApp [wwwtshandcom] (Azure)"
     runs-on: ubuntu-latest
     timeout-minutes: 10  # The entire job will fail if it runs longer than 'x' minutes.
-    environment: azure-wrk-wwwtshandcom # Name of the Github environment.
+    environment: "azure-swa-wwwtshandcom-${{ github.event.inputs.deploy_env }}" # Name of the environment.
     defaults:
       run: # Set job defaults for 'run' commands.
         working-directory: ./environments/azure/workloads/swa-wwwtshandcom
@@ -66,9 +65,6 @@ jobs:
       ARM_SUBSCRIPTION_ID_IAC: ${{ secrets.ARM_SUBSCRIPTION_ID_IAC }} # Azure: Subscription for IaC Backends.
       ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }} # Azure: Subscription for resources.
 
-      # Github PAT Auth
-      GH_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }} # Required by Terraform provider to manage environments.
-
       # Cloudflare Config
       CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_TSHANDCOM_ID }}
       CLOUDFLARE_ZONE_TOKEN: ${{ secrets.CLOUDFLARE_ZONE_TSHANDCOM_TOKEN }}
@@ -77,6 +73,9 @@ jobs:
       RUN_PLAN: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.tf_action == 'Plan' || github.event.inputs.tf_action == 'Plan-Apply' }}
       RUN_APPLY: ${{ github.event.inputs.tf_action == 'Plan-Apply' }}
       RUN_DESTROY: ${{ github.event.inputs.tf_action == 'Destroy' }}
+
+      # Set variable file to use based on environment deployment. 
+      ENV_TFVARS: "env-${{ github.event.inputs.deploy_env }}.tfvars"
 
     steps:
       - name: Checkout Repository
@@ -108,24 +107,22 @@ jobs:
 
       - name: Terraform Plan
         if: env.RUN_PLAN == 'true'
-        timeout-minutes: 5  # This step will fail if it runs longer than 'x' minutes.
+        timeout-minutes: 10  # This step will fail if it runs longer than 'x' minutes.
         run: |
-          terraform plan -out=terraform.tfplan -var-file=prod.tfvars \
+          terraform plan -out=terraform.plan -var-file=$ENV_TFVARS \
           -var-file=cloudflare.tfvars \
-          -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
-          -var="github_pat=$GH_PAT_TOKEN"
+          -var="subscription_id=$ARM_SUBSCRIPTION_ID"
         
       - name: Terraform Apply
         if: env.RUN_APPLY == 'true'
-        timeout-minutes: 15 # Fail if it runs longer than 'x' minutes.
+        timeout-minutes: 25 # Fail if it runs longer than 'x' minutes.
         run: |
-          terraform apply --auto-approve terraform.tfplan
+          terraform apply --auto-approve terraform.plan
     
       - name: Terraform Destroy
         if: env.RUN_DESTROY == 'true'
-        timeout-minutes: 15 # Fail if it runs longer than 'x' minutes.
+        timeout-minutes: 25 # Fail if it runs longer than 'x' minutes.
         run: |
-          terraform destroy --auto-approve -var-file=prod.tfvars \
+          terraform destroy --auto-approve -var-file=$ENV_TFVARS \
           -var-file=cloudflare.tfvars \
-          -var="subscription_id=$ARM_SUBSCRIPTION_ID" \
-          -var="github_pat=$GH_PAT_TOKEN"
+          -var="subscription_id=$ARM_SUBSCRIPTION_ID" 

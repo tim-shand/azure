@@ -25,26 +25,21 @@ variable "tags" {
   default     = {}
 }
 
-variable "custom_domain_name" {
-  description = "Custom domain name to use with DNS CNAME and Azure SWA."
+variable "tier" {
+  description = "Tier plan for Static Web App (Free, Standard)."
   type        = string
+  default     = "free"
 }
 
 # Cloudflare: https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
 variable "cloudflare_config" {
   description = "Map of Cloudflare details required for deployment."
-  type = map(string)
-  sensitive = true # No output.
-}
-
-# Github
-variable "github_config" {
-  description = "Map of values for Github configuration."
   type        = map(string)
+  sensitive   = true # No output.
 }
 
-variable "github_pat" {
-  description = "Github API token for deployment."
-  type        = string
-  sensitive   = true
+# Static Web App Config
+variable "swa_config" {
+  description = "Map of values for Static Web App configuration."
+  type        = map(string)
 }
