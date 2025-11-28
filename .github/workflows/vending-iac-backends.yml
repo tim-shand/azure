@@ -10,7 +10,7 @@ on:
         type: choice
         options:
           - "Plan"
-          - "Plan-Apply"
+          - "Apply"
           - "Destroy"
 
   push: # Commits
@@ -59,8 +59,8 @@ jobs:
       GH_PAT_TOKEN: ${{ secrets.GH_PAT_TOKEN }} # Required by Terraform provider to manage GH environments.
 
       # Determine which steps should run (on commits, PR, plan and plan-apply). 
-      RUN_PLAN: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.tf_action == 'Plan' || github.event.inputs.tf_action == 'Plan-Apply' }}
-      RUN_APPLY: ${{ github.event.inputs.tf_action == 'Plan-Apply' }}
+      RUN_PLAN: ${{ github.event_name == 'push' || github.event_name == 'pull_request' || github.event.inputs.tf_action == 'Plan' || github.event.inputs.tf_action == 'Apply' }}
+      RUN_APPLY: ${{ github.event.inputs.tf_action == 'Apply' }}
       RUN_DESTROY: ${{ github.event.inputs.tf_action == 'Destroy' }}
 
     steps:
