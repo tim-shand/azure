@@ -3,7 +3,7 @@
 #======================================#
 
 # Data Calls
-data "azurerm_client_config" "current" {}
+data "azuread_client_config" "current" {}
 
 # Generate naming conventions.
 locals {
@@ -56,12 +56,12 @@ resource "azurerm_key_vault" "swa_keyvault" {
 resource "azurerm_role_assignment" "rbac_kv_sp1" {
   scope                = azurerm_key_vault.swa_keyvault.id
   role_definition_name = "Key Vault Administrator"
-  principal_id         = data.azurerm_client_config.current.object_id
+  principal_id         = data.azuread_client_config.current.object_id
 }
 resource "azurerm_role_assignment" "rbac_kv_sp2" {
   scope                = azurerm_key_vault.swa_keyvault.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = data.azurerm_client_config.current.object_id
+  principal_id         = data.azuread_client_config.current.object_id
 }
 
 # Azure: Key Vault - Create Secret (SWA Deployment Token)
