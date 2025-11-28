@@ -44,7 +44,7 @@ permissions:
 
 jobs:
   deploy_infra_swa_wwwtshandcom:
-    name: "Deploy: Infra - StaticWebApp [wwwtshandcom] (Azure)"
+    name: "Deploy: StaticWebApp [wwwtshandcom] (Azure)"
     runs-on: ubuntu-latest
     timeout-minutes: 10  # The entire job will fail if it runs longer than 'x' minutes.
     environment: "azure-swa-wwwtshandcom-${{ github.event.inputs.deploy_env }}" # Name of the environment.
