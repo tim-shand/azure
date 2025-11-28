@@ -34,7 +34,7 @@ on:
     paths:
       - "environments/azure/workloads/swa-wwwtshandcom"
       - ".github/workflows/azure-workload-wwwtshandcom.yml"
-      - "modules/azure/app-web-staticwebapp"
+      - "modules/azure/swa-webapp-basic-dns"
     branches:
       - main
 
