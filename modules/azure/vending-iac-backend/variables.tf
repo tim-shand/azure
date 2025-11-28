@@ -28,8 +28,3 @@ variable "create_github_env" {
   default     = false
 }
 
-variable "enable_dev_state" {
-  description = "Enable to create additional 'TF_BACKEND_KEY_DEV' environment variable."
-  type        = bool
-  default     = false
-}
