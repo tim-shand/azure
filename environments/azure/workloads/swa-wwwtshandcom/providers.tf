@@ -30,5 +30,5 @@ provider "cloudflare" {
   api_token = var.cloudflare_config["zone_token"] # Repo secrets, passed via GH actions.
 }
 
-data "azurerm_subscription" "current" {} # Get current Azure CLI subscription. 
-data "azurerm_client_config" "curent" {} # Get current Azure session information. 
+data "azurerm_subscription" "current" {}  # Get current Azure CLI subscription. 
+data "azurerm_client_config" "current" {} # Get current Azure session information. 
