@@ -25,12 +25,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "tier" {
-  description = "Tier plan for Static Web App (Free, Standard)."
-  type        = string
-  default     = "free"
-}
-
 # Static Web App Config
 variable "swa_config" {
   description = "Map of values for Static Web App configuration."

@@ -25,12 +25,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "tier" {
-  description = "Tier plan for Static Web App (Free, Standard)."
-  type        = string
-  default     = "free"
-}
-
 # Cloudflare: https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
 variable "cloudflare_config" {
   description = "Map of Cloudflare details required for deployment."

@@ -4,7 +4,6 @@
 
 # General / Azure
 location = "westus2" # SWA is limited regions for free-tier.
-tier     = "Free"
 naming = {
   prefix  = "tjs"          # Short name of organization ("abc").
   service = "web"          # Service name used in the project ("iac", "mgt", "sec").
