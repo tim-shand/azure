@@ -22,7 +22,7 @@ terraform {
 # Provider configurations.
 provider "azurerm" {
   features {}
-  tenant_id       = data.azuread_client_config.current.tenant_id # Get tenant from current session.
+  tenant_id       = data.azurerm_client_config.current.tenant_id # Get tenant from current session.
   subscription_id = var.subscription_id                          # Target subscription for resources. 
 }
 
@@ -30,5 +30,4 @@ provider "cloudflare" {
   api_token = var.cloudflare_config["zone_token"] # Repo secrets, passed via GH actions.
 }
 
-data "azuread_client_config" "current" {} # Get current user session data.
-data "azurerm_subscription" "current" {}  # Get current Azure CLI subscription.
+data "azurerm_subscription" "current" {} # Get current Azure CLI subscription.

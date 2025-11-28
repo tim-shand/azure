@@ -33,7 +33,7 @@ on:
   pull_request: # PR
     paths:
       - "environments/azure/workloads/swa-wwwtshandcom"
-      - ".github/workflows/azure-workload-wwwtshandcom.yml"
+      - ".github/workflows/azure-swa-wwwtshandcom.yml"
       - "modules/azure/swa-webapp-basic-dns"
     branches:
       - main

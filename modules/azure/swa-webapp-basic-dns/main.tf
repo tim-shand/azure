@@ -56,17 +56,17 @@ resource "azurerm_key_vault" "swa_keyvault" {
 resource "azurerm_role_assignment" "rbac_kv_sp1" {
   scope                = azurerm_key_vault.swa_keyvault.id
   role_definition_name = "Key Vault Administrator"
-  principal_id         = data.azuread_client_config.current.object_id
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 resource "azurerm_role_assignment" "rbac_kv_sp2" {
   scope                = azurerm_key_vault.swa_keyvault.id
   role_definition_name = "Key Vault Secrets Officer"
-  principal_id         = data.azuread_client_config.current.object_id
+  principal_id         = data.azurerm_client_config.current.object_id
 }
 
 # Azure: Key Vault - Create Secret (SWA Deployment Token)
 resource "azurerm_key_vault_secret" "swa_token" {
-  name         = "DeploymentToken-${var.naming.project}-${swa_config.environment}"
+  name         = "DeploymentToken-${var.naming.project}-${var.swa_config.environment}"
   value        = azurerm_static_web_app.swa.api_key # Used by source repo for deployment via GHA.
   key_vault_id = azurerm_key_vault.swa_keyvault.id
 }
@@ -77,11 +77,11 @@ resource "cloudflare_dns_record" "cname_record" {
   count   = var.swa_config.enable_cloudflare_dns ? 1 : 0 # Only setup DNS resources if enabled.
   zone_id = var.cloudflare_config["zone_id"]
   name    = var.swa_config.custom_domain_name
-  ttl     = 60                                                                              # 60 seconds, can update later on.
-  type    = "CNAME"                                                                         # Can be "A" or "TXT" depending on your setup.
-  comment = "Azure - ${var.naming.project}-${swa_config.environment} - Domain Verification" # Adds a comment for clarity.
-  content = azurerm_static_web_app.swa.default_host_name                                    # Supplied by Azure SWA resource after creation.
-  proxied = false                                                                           # Required to be 'false' for DNS CNAME verification.
+  ttl     = 60                                                                                  # 60 seconds, can update later on.
+  type    = "CNAME"                                                                             # Can be "A" or "TXT" depending on your setup.
+  comment = "Azure - ${var.naming.project}-${var.swa_config.environment} - Domain Verification" # Adds a comment for clarity.
+  content = azurerm_static_web_app.swa.default_host_name                                        # Supplied by Azure SWA resource after creation.
+  proxied = false                                                                               # Required to be 'false' for DNS CNAME verification.
 }
 
 # Sleep while DNS propagates (it can take a few minutes).
