@@ -39,7 +39,7 @@ resource "random_integer" "rndint" {
 resource "azurerm_resource_group" "swa_rg" {
   name     = "${local.name_full}-rg"
   location = var.location
-  tags     = var.tags
+  tags     = local.tags_merged
 }
 
 # Azure: Static Web App
@@ -47,7 +47,7 @@ resource "azurerm_static_web_app" "swa" {
   name                = "${local.name_full}-swa"
   resource_group_name = azurerm_resource_group.swa_rg.name
   location            = azurerm_resource_group.swa_rg.location
-  tags                = var.tags
+  tags                = local.tags_merged
   sku_tier            = "Free" # or "Standard"
   # Ignore repo url and branch to prevent setting to null on re-run. 
   # This allows external repo to push deployment of app using SWA token. 
@@ -64,7 +64,7 @@ resource "azurerm_key_vault" "swa_keyvault" {
   name                       = local.kv_name
   resource_group_name        = azurerm_resource_group.swa_rg.name
   location                   = azurerm_resource_group.swa_rg.location
-  tags                       = var.tags
+  tags                       = local.tags_merged
   tenant_id                  = data.azuread_client_config.current.tenant_id
   sku_name                   = "standard"
   rbac_authorization_enabled = true
