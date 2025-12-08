@@ -13,21 +13,21 @@ on:
           - "Plan-Apply"
           - "Destroy"
 
-  push: # Commits
-    paths:
-      - "environments/azure/platform/**"
-      - "modules/azure/plz**"
-      - ".github/workflows/azure-platform-lz.yml"
-    branches:
-      - main
+  # push: # Commits
+  #   paths:
+  #     - "environments/azure/platform/**"
+  #     - "modules/azure/plz**"
+  #     - ".github/workflows/azure-platform-lz.yml"
+  #   branches:
+  #     - main
   
-  pull_request: # PR
-    paths:
-      - "environments/azure/platform/**"
-      - "modules/azure/plz**"
-      - ".github/workflows/azure-platform-lz.yml"
-    branches:
-      - main
+  # pull_request: # PR
+  #   paths:
+  #     - "environments/azure/platform/**"
+  #     - "modules/azure/plz**"
+  #     - ".github/workflows/azure-platform-lz.yml"
+  #   branches:
+  #     - main
 
 permissions:
   id-token: write # Required for OIDC auth

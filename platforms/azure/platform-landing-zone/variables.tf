@@ -1,5 +1,5 @@
 #=================================================#
-# Platform: Deploying Azure Platform Landing Zone.
+# Platform LZ: Variables
 #=================================================#
 
 # General
