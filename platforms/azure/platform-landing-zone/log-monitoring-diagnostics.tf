@@ -1,6 +1,6 @@
-#================================================#
+#=================================================#
 # Platform LZ: Logging - Monitoring & Diagnostics
-#================================================#
+#=================================================#
 
 locals {
   name_part      = "${var.naming["prefix"]}-${var.naming["service"]}-log-mon" # Combine name parts in to single var.
