@@ -41,8 +41,10 @@ variable "hub_vnet_space" {
   type = string
 }
 variable "hub_subnets" {
-  description = "Map of hub vNet subnet addresses."
+  description = "Map of hub VNet subnet addresses."
   type = map(object({ # Use object name as 'name'.
+    name = string
     address = list(string)
+    default_outbound_access = bool
   }))
 }

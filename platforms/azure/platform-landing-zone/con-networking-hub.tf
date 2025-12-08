@@ -14,10 +14,10 @@ resource "azurerm_resource_group" "plz_con_hub_rg" {
 }
 
 #======================================#
-# Network: Hub - VNet & Subnet
+# Network: Hub - VNet & Subnets
 #======================================#
 
-# Create: Virtual Network (Hub)
+# VNet (Hub)
 resource "azurerm_virtual_network" "plz_con_hub_vnet" {
   name                = "${local.name_part}-vnet"
   location            = azurerm_resource_group.plz_con_hub_rg.location
@@ -26,38 +26,33 @@ resource "azurerm_virtual_network" "plz_con_hub_vnet" {
   tags                = var.tags
 }
 
-# Create: Virtual Network Subnet (Primary)
+# VNet (Hub): Subnets
 resource "azurerm_subnet" "plz_con_hub_subnet" {
-  for_each = var.hub_subnets
-  name                 = "${local.name_part}-sn1"
+  for_each             = var.hub_subnets # Loop through map of objects, defining the subnets.
+  name                 = "${local.name_part}-${each.value.name}-snet"
   resource_group_name  = azurerm_virtual_network.plz_con_hub_vnet.resource_group_name
   virtual_network_name = azurerm_virtual_network.plz_con_hub_vnet.name
-  address_prefixes     = [var.subnet_space]
-  default_outbound_access_enabled = true # Disable for prevent system-assigned, outbound-only public IP.
+  address_prefixes     = [each.value.address] # Required to be presented as a list. 
+  default_outbound_access_enabled = [each.value.default_outbound_access] # Disable to prevent system-assigned outbound-only public IP.
 }
 
-#======================================#
-# Network Security Group (NSG)
-#======================================#
-
-# NSG rules to be defined in separate files.
-resource "azurerm_network_security_group" "plz_con_hub_sn1_nsg" {
-  name                = "${local.name_part}-sn1-nsg"
+# VNet (Hub): Network Security Groups (NSG). NSG rules to be defined in separate files or TFVARS.
+resource "azurerm_network_security_group" "plz_con_hub_subnet_nsg" {
+  for_each = var.hub_subnets # Create a separate NSG for each subnet in variable.
+  name                = "${local.name_part}-${each.value.name}-nsg"
   location            = azurerm_virtual_network.plz_con_hub_vnet.location
   resource_group_name = azurerm_virtual_network.plz_con_hub_vnet.resource_group_name
   tags                = var.tags
 }
 
-# Associate NSG with subnet.
-resource "azurerm_subnet_network_security_group_association" "plz_con_hub_sn1_nsg_assoc" {
-  subnet_id                 = azurerm_subnet.plz_con_hub_sn1.id
-  network_security_group_id = azurerm_network_security_group.plz_con_hub_sn1_nsg.id
+# VNet (Hub): Associate NSGs with subnets.
+resource "azurerm_subnet_network_security_group_association" "plz_con_hub_snet_nsg_assoc" {
+  for_each = var.hub_subnets # Associate each subnet with NSG. 
+  subnet_id                 = azurerm_subnet.plz_con_hub_subnet[each.key].id
+  network_security_group_id = azurerm_network_security_group.plz_con_hub_subnet_nsg[each.key].id
 }
 
-#======================================#
-# Network Watcher
-#======================================#'
-
+# VNet (Hub): Network Watcher
 resource "azurerm_network_watcher" "plz_con_hub_nw" {
   name                = "${local.name_part}-nw"
   location            = azurerm_resource_group.plz_con_hub_rg.location

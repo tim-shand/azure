@@ -40,17 +40,21 @@ hub_subnets = {
   "AzureManagementSubnet" = {
     name = "mgt"
     address = ["10.50.0.0/24"]
+    default_outbound_access = true
   }
   "AzureFirewallSubnet" = {
     name = "fwl"
     address = ["10.50.1.0/26"]
+    default_outbound_access = true
   }  
   "AzureGatewaySubnet" = {
     name = "gwy"
     address = ["10.50.2.0/24"]
+    default_outbound_access = false
   }
   "AzureBastionSubnet" = {
     name = "bas"
     address = ["10.50.3.0/26"]
+    default_outbound_access = false
   }
 }
