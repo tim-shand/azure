@@ -1,6 +1,10 @@
 # Terraform Module: Azure/GitHub IaC Backend Vending
 
-This Terraform module creates Azure and GitHub resources used for Terraform remote state backends, enabling the centralized storage of workload state files, located in a _dedicated_ Infrastructure-as-Code Azure subscription.  
+This Terraform module creates Azure and GitHub resources used for Terraform remote state backends, enabling the centralized storage of individual workload state files, located in a _dedicated_ Infrastructure-as-Code Azure subscription.  
+
+---
+
+## Features
 
 - Automates the provisioning of required resources for new Terraform backends and secure CI/CD connectivity. 
 - Creates a GitHub Actions environment per workload, containing workload specific variables for workload Terraform backend. 
@@ -10,6 +14,8 @@ This Terraform module creates Azure and GitHub resources used for Terraform remo
 - **NOTE:** Requires MANUAL actions:
   - Add the `ARM_SUBSCRIPTION_ID` secret to the new GitHub environments to keep subscription IDs out of code base. 
   - One-time grant admin consent for Service Principal API permissions (`Application.ReadWrite.All`) in Entra ID. 
+
+---
 
 ## Requirements
 
@@ -21,7 +27,9 @@ This Terraform module creates Azure and GitHub resources used for Terraform remo
   - Added as GitHub repository secret, referenced by GitHub Actions workflow.
   - Requires read/write access to `actions`, `actions variables`, `administration`, `code`, ``environments`, and `secrets`.
 
-## Example Usage
+---
+
+## Usage
 
 ```hcl
 module "vending_iac_backends" {
@@ -35,7 +43,20 @@ module "vending_iac_backends" {
 }
 ```
 
-### Example: Remote State Structure
+## Inputs
+
+**NOTE:** See `variables.tf` for more details. 
+
+- Resource Group name of the Storage Account for IaC backends. 
+- Storage Account name for IaC backends. 
+- Map of values for GitHub configuration, passed in from GitHub Actions workflow. 
+- Name of projects, used to create GitHub environments, provided in TFVARS file. 
+
+---
+
+## Examples
+
+### Remote State Structure
 
 ```markdown
 IaC Subscription: mgt-iac-sub
@@ -55,7 +76,7 @@ Workload Subscriptions (workload-sub-02)
 ├── App2 resources
 ```
 
-### Example: GitHub Environment Variables
+### GitHub Environment Variables
 
 | Environment          | Variable       | Value                           | 
 | -------------------- | -------------- | ------------------------------- |
@@ -65,3 +86,5 @@ Workload Subscriptions (workload-sub-02)
 | azure-mgt-platformlz | TF_BACKEND_KEY | azure-mgt-platformlz.tfstate    |
 | azure-swa-workload01 | TF_BACKEND_CN  | tfstate-azure-app-myapp01       |
 | azure-swa-workload01 | TF_BACKEND_KEY | azure-swa-workload01.tfstate    |
+
+---
