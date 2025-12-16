@@ -7,15 +7,18 @@ variable "subscription_id" {
   description = "Subscription ID for the target changes."
   type        = string
 }
+
 variable "location" {
   description = "Azure region to deploy resources into."
   type        = string
 }
+
 variable "naming" {
-  description = "A map of naming parameters to use with resources."
+  description = "A map of naming values to use with resources."
   type        = map(string)
   default     = {}
 }
+
 variable "tags" {
   description = "A map of tags to apply to resources."
   type        = map(string)

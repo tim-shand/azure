@@ -2,15 +2,16 @@
 # Platform LZ: Main Deployment
 #============================================#
 
-# Set naming conventions for resources. 
+# Set globally used local variables.
 locals {
-  prefix = "${var.naming.org}-${var.naming.service}-"
+  module_path = "../../../modules/azure"                  # Path to modules directory. 
+  prefix      = "${var.naming.org}-${var.naming.service}" # Default naming prefix. 
 }
 
-# module "plz-log-monitor-diagnostics" {
-#   source = "../../../modules/plz-log-monitor-diagnostics"
-#   for_each = var.enable_plz_logging ? { "log" = true } : {}
-#   location = var.location # Get from TFVARS file.
-#   naming = var.naming # Get from TFVARS file.
-#   tags = var.tags # Get from TFVARS file.
-# }
+# Stack: Governance ----------------------------------#
+module "plz_governance" {
+  source                    = "${local.module_path}/azure-plz-governance"
+  gov_management_group_root = var.gov_management_group_root
+  gov_management_group_list = var.gov_management_group_list
+}
+

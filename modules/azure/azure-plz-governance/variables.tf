@@ -1,3 +1,22 @@
+# Governance: Management Groups -----------------#
+
+variable "location" {
+  description = "Azure region to deploy resources into."
+  type        = string
+}
+
+variable "naming" {
+  description = "A map of naming values to use with resources."
+  type        = map(string)
+  default     = {}
+}
+
+variable "tags" {
+  description = "A map of tags to apply to resources."
+  type        = map(string)
+  default     = {}
+}
+
 variable "gov_management_group_root" {
   description = "Name of the top-level Management Group (root)."
   type        = string
@@ -18,3 +37,4 @@ variable "gov_management_group_list" {
     error_message = "Variable can only contain letters, numbers, and dashes (-). No spaces or other symbols are allowed."
   }
 }
+

@@ -19,7 +19,7 @@ tags = {
 }
 
 # Governance: Management Groups -----------------#
-gov_management_group_root = "core" # Top level Management Group name.
+gov_management_group_root = "Core" # Top level Management Group name.
 gov_management_group_list = {
   "platform" = {
     display_name = "Platform"
