@@ -23,28 +23,37 @@ variable "tags" {
 }
 
 # Governance: Management Groups -----------------#
-variable "plz_management_groups" {
-  description = "Map of management groups to create."
-  type = map(object({ # Use object name as 'name'.
-    mg_display_name = string
-    subscription_ids = optional(list(string))
-  }))
+variable "gov_management_group_root" {
+  description = "Name of the top-level Management Group (root)."
+  type        = string
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9-]+$", var.resource_name)) # Only allow alpha-numeric with dashes.
+    error_message = "Variable can only contain letters, numbers, and dashes (-). No spaces or other symbols are allowed."
+  }
 }
-variable "subscription_ids_plz" {
-  description = "List of subscription IDs for the 'Platform' management group, passed in via GH workflow."
-  type = list(string)
+
+variable "gov_management_group_list" {
+  description = "Map of Management Group configuration to deploy."
+  type = map(object({ # Use object variable name as management group 'name'.
+    display_name      = string
+    subscription_list = optional(list(strings))
+  }))
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9-]+$", var.resource_name)) # Only allow alpha-numeric with dashes.
+    error_message = "Variable can only contain letters, numbers, and dashes (-). No spaces or other symbols are allowed."
+  }
 }
 
 # Connectivity: Network (Hub) -----------------#
 variable "hub_vnet_space" {
   description = "IP address space for Hub vNet."
-  type = string
+  type        = string
 }
 variable "hub_subnets" {
   description = "Map of hub VNet subnet addresses."
   type = map(object({ # Use object name as 'name'.
-    name = string
-    address = list(string)
+    name                    = string
+    address                 = list(string)
     default_outbound_access = bool
   }))
 }
@@ -52,5 +61,5 @@ variable "hub_subnets" {
 # Logging: Monitoring & Diagnostics -----------------#
 variable "logging_law" {
   description = "Map of central Log Analytics configuration."
-  type = map(string)
+  type        = map(string)
 }

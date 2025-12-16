@@ -5,10 +5,10 @@
 # General
 location = "newzealandnorth"
 naming = {
-  prefix      = "tjs"      # Short name of organization ("abc").
-  service     = "plz"      # Service name used in the project ("iac", "mgt", "sec").
-  project     = "platform" # Project name for related resources ("platform", "landingzone").
-  environment = "prd"      # Environment for resources/project ("dev", "tst", "prd", "alz").
+  org         = "tjs"      # Short name of organization (abc).
+  service     = "plz"      # Service name used in the project (iac, mgt, sec).
+  project     = "platform" # Project name for related resources (platform, landingzone).
+  environment = "prd"      # Environment for resources/project (dev, tst, prd).
 }
 
 # Tags (assigned to all bootstrap resources).
@@ -19,13 +19,10 @@ tags = {
 }
 
 # Governance: Management Groups -----------------#
+gov_management_group_root = "core" # Top level Management Group name.
 gov_management_group_list = {
-  "core" = {
-    display_name = "Core" # Top level Management Group.
-  }
   "platform" = {
     display_name = "Platform"
-    # Insert subscriptions here at runtime via workflow.
   }
   "workloads" = {
     display_name = "Workloads"

@@ -1,8 +1,11 @@
 #============================================#
-# Platform LZ: Main
+# Platform LZ: Main Deployment
 #============================================#
 
-# Deploy resources via modules. 
+# Set naming conventions for resources. 
+locals {
+  prefix = "${var.naming.org}-${var.naming.service}-"
+}
 
 # module "plz-log-monitor-diagnostics" {
 #   source = "../../../modules/plz-log-monitor-diagnostics"
