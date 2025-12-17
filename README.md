@@ -1,6 +1,6 @@
-# Personal Home Lab
+# Azure Platform: Personal Tenant
 
-Welcome to my personal home lab! :wave:  
+Welcome to my personal homelab! :wave:  
 
 This project provides an environment for self-hosting and experimenting with different technologies.  
 A base for hands-on learning, developing knowledge and improving skills in DevOps and Cloud platforms.  
@@ -8,28 +8,7 @@ Bootstrapped, deployed, and managed using Infra-as-Code and CI/CD workflows.
 
 As a big fan of small tech (think micro-pcs, Raspberry Pi etc), a primary requirement is maintaining a small footprint for my on-prem environment. I aim to re-use as much existing hardware as possible, recycling second hand gear and giving it a new life in my lab. 
 
-![Photo of my current home lab setup.](docs/images/homelab.jpg)
-
----
-
-## :computer: Physical Hardware (On-Prem)
-
-### Hypervisors (Proxmox)
-
-- 2x Lenovo Think Station P330 (Intel i5 9600T, 16GB DDR4, 250GB OS, 1TB ZFS pool). 
-  - Running clustered [Proxmox VE](https://www.proxmox.com/en/products/proxmox-virtual-environment/overview) for VMs.  
-  - Currently investigating NAS options to improve high availability and failover :eyes:. 
-- 1x Raspberry Pi 1B+ (yes, very old)
-  - Running as a QDevice, maintaining Proxmox cluster quorum [details on setup found here](https://www.tshand.com/p/home-lab-part-6-setup-qdevice-for-proxmox-quorum/).
-  - Will be replaced and repurposed in future when I add a 3rd Proxmox node. 
-
-### Networking
-
-- **Switch:** TP-Link TL-SG108PE 8-Port Gigabit Easy Smart PoE Switch. 
-  - Connecting nodes physically, providing outbound access to Internet via firewall connected to home WiFi network. 
-- **Firewall:** HP EliteDesk G1 (Intel i5-4590T, 16 GB DDR3, 250 GB SSD). 
-  - Running [OPNsense](https://opnsense.org/) providing firewall, DNS, VLAN and routing functionality. 
-  - Separate VLANs for infrastructure, management and server workloads. 
+![Photo of my current homelab setup.](docs/images/homelab.jpg)
 
 ---
 
@@ -66,9 +45,6 @@ As a big fan of small tech (think micro-pcs, Raspberry Pi etc), a primary requir
   - Provider agnostic IaC tool, free to use, plenty of discussion, guides and support available. 
   - Deploy and manage on-prem and cloud resources using dedicated providers. 
   - Other considerations: Pulumi, OpenTofu. 
-- **GitHub Actions: Self-hosted Runners (PENDING)**
-  - Extends GitHub Actions workflows to allow management of on-prem environments. 
-  - Can be run on a dedicated VM within Proxmox. 
 - **Bash/Powershell**
   - Bootstrapping and misc utility scripts. 
 
@@ -76,8 +52,6 @@ As a big fan of small tech (think micro-pcs, Raspberry Pi etc), a primary requir
 
 ## :jigsaw: Workloads
 
-- **Firewall/Router:** Virtualized [pfSense](https://www.pfsense.org/download/) VM (for internal lab use). 
-- **Virtual Machines:** Management/jump host servers, CI/CD runners, test and misc utility VMs. 
 - **Personal Website (www.tshand.com) \[Azure\]**
   - Static website built with Hugo, deployed to Azure Static Web Apps using Terraform and GitHub workflows. 
   - Infra deployed from home lab repo, website source code located in separate GitHub repository. 
@@ -87,6 +61,8 @@ As a big fan of small tech (think micro-pcs, Raspberry Pi etc), a primary requir
 
 ## :memo: To Do
 
-- [ ] Setup self-hosted GitHub Runner on-prem. 
-- [ ] Configure logging for hub networking to Log Analytics Workspace. 
-- [ ] Investigate on-prem connectivity (VPN Gateway?). 
+- [ ] Platform Landing Zone: Governance
+- [ ] Platform Landing Zone: Observability
+- [ ] Platform Landing Zone: Connectivity
+- [ ] Platform Landing Zone: Security
+- [ ] Subscription Vending

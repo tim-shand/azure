@@ -11,7 +11,7 @@ This can be helpful when utilizing a monolithic style repository, as all project
 ### Accounts
 
 - **Azure:** Existing Azure account with `contributor` role assigned to a _dedicated_ subscription for IaC.
-- **Github:** Existing Github account with a repository for the Azure project.
+- **Github:** Existing GitHub account with a repository for the Azure project.
 
 ### Required Applications (Installed & Authenticated Locally)
 
