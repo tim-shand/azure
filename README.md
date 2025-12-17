@@ -1,65 +1,58 @@
 # Azure Platform: Personal Tenant
 
-Welcome to my personal homelab! :wave:  
+_Automated, IaC-driven Azure environment implementing governance, automation, and targeting operational best practices._
 
-This project provides an environment for self-hosting and experimenting with different technologies.  
-A base for hands-on learning, developing knowledge and improving skills in DevOps and Cloud platforms.  
-Bootstrapped, deployed, and managed using Infra-as-Code and CI/CD workflows.  
-
-As a big fan of small tech (think micro-pcs, Raspberry Pi etc), a primary requirement is maintaining a small footprint for my on-prem environment. I aim to re-use as much existing hardware as possible, recycling second hand gear and giving it a new life in my lab. 
-
-![Photo of my current homelab setup.](docs/images/homelab.jpg)
+This repository contains my personal Azure tenant, providing enterprise-style operations and a sandbox for hands-on learning. It includes Terraform-based landing zones, subscription management, monitoring, and CI/CD pipelines, aiming to align with CAF guidelines and best practice principals. 
 
 ---
 
-## :cloud: Cloud Services
+## :cloud: Components
 
-### Azure
+### Platform Landing Zone
 
-- **Automated bootstrapping using Powershell + Terraform** 
-  - Generates required Terraform files, kicks off the bootstrapping deployment, and triggers post-deployment state migration to Azure. 
-  - Creates Entra ID Service Principal, secured with Federated Credentials (OIDC), adding the SP details as secrets to the specified GitHub repository. 
-- **Platform Landing Zone** 
-  - Minimalistic, light-weight platform landing zone for connectivity, governance, monitoring and shared resources. 
-  - Hub/Spoke network topology, with hub VNet providing centralized connectivity for workload (spoke) VNet peering. 
+Minimalistic, light-weight platform landing zone designed for personal use or by small organizations. IaC to deploy and manage shared resources, connectivity, governance, policy-as-code, monitoring/observability. 
+
+- **Bootstrapping (Powershell + Terraform)** 
+  - Provides the initial setup process, generating required Terraform files, and triggers post-deployment state migration to Azure. 
+  - Creates Entra ID Service Principal, secured with Federated Credentials (OIDC), adding the details as secrets to GitHub repository. 
+- **Governance & Policies**
+  - Management groups, RBAC, and policy enforcement automated via Terraform modules, ensures scalable governance. 
+- **Observability & Monitoring**
+  - Centralized Log Analytics workspace with diagnostic settings and alerting. 
+- **Networking / Hub-Spoke Architecture**
+  - Hub VNet for shared services with workload VNets peered as spokes for isolated environments. 
 - **IaC Backend Vending** 
-  - Utilizes a dedicated IaC subscription to contain remote Terraform states, with per-project Azure Blob Containers and GitHUb ACtions environments for remote state management. 
-  - Project backends are deployed using the `IaC Backend Vending` module to create Azure and GitHub resources. 
+  - Dedicated IaC subscription to contain all remote Terraform states, deployed using the custom `IaC Backend Vending` module. 
+  - Blob Containers per project for remote state management, with individual GitHub environments maintaining isolation between workloads. 
 
-### Cloudflare
+### Workloads
 
-- Domain registrar and DNS provider for personal domains. 
-- DNS zones updated using Terraform resources + API token stored in a repository secret. 
-
-### GitHub + Actions
-
-- Contains the overall project, and provides a centralized code repository. 
-- GitHub Actions providing CI/CD by automating deployments using workflows. 
-- Utilizing both top-level repository and environment variables/secrets for workload specific deployments. 
-
----
-
-## :hammer_and_wrench: Deployment Tool Set
-
-- **[Terraform](https://www.terraform.io/)**
-  - Provider agnostic IaC tool, free to use, plenty of discussion, guides and support available. 
-  - Deploy and manage on-prem and cloud resources using dedicated providers. 
-  - Other considerations: Pulumi, OpenTofu. 
-- **Bash/Powershell**
-  - Bootstrapping and misc utility scripts. 
-
----
-
-## :jigsaw: Workloads
-
-- **Personal Website (www.tshand.com) \[Azure\]**
+- **Personal Website (www.tshand.com)**
   - Static website built with Hugo, deployed to Azure Static Web Apps using Terraform and GitHub workflows. 
-  - Infra deployed from home lab repo, website source code located in separate GitHub repository. 
-  - Workflow uses Azure SWA deployment token held as repo secret to trigger build on commit/PR. 
+  - Separate repositories for infrastructure (this) and source code. 
+  - Workflow uses Azure SWA deployment token held as repository secret, configured to trigger build on commit/PR. 
 
 ---
 
-## :memo: To Do
+## :hammer_and_wrench: Tooling & Automation
+
+- **Terraform:** IaC tool for provisioning and managing Azure resources. 
+- **Bash/Powershell:** Environment configuration, bootstrapping, automation, and misc utility scripts. 
+- **GitHub Actions:** Providing CI/CD workflows for automating deployment processes. 
+
+---
+
+## :jigsaw: Project Structure
+
+```shell
+environments/        # Global resources, landing zone, and workloads
+modules/             # Reusable Terraform modules (governance, networking, observability, IaC backends)
+docs/                # Architecture overview, STAR talking points, diagrams
+README.md            # Overview and purpose
+```
+---
+
+## :memo: To Do / Future Improvements
 
 - [ ] Platform Landing Zone: Governance
 - [ ] Platform Landing Zone: Observability
