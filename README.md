@@ -11,7 +11,7 @@ Designed to be cost efficient, utilising free or low-cost options where possible
 
 ## 🚀 Platform Landing Zone
 
-Minimalistic, light-weight platform landing zone designed for personal use or by small organizations. IaC to deploy and manage shared resources, connectivity, governance, policy-as-code, monitoring and observability - aiming to align with CAF guidelines and best practice principals where possible.
+Light-weight platform landing zone designed for personal use or by small organizations. IaC to deploy and manage shared resources, connectivity, governance, policy-as-code, monitoring and observability - aiming to align with CAF guidelines and best practice principals where possible.
 
 - **Bootstrapping (Powershell + Terraform)** 
   - Provides the initial setup process, generating required Terraform files, and triggers post-deployment state migration to Azure. 
