@@ -31,6 +31,35 @@ This Terraform module creates Azure and GitHub resources used for Terraform remo
 
 ## ▶️ Usage
 
+1. Add a variable declaration to the root module `variables.tf` file for map of objects. 
+
+```hcl
+variable "projects" {
+  description = "Map of project config for new IaC backends."
+  type = map(object({
+    create_github_env = bool # Enable or disable creation of GitHub environment. 
+  }))
+}
+```
+
+2. Add a map of objects called `projects` to the root module `TFVARS` file. This will be used to iterate through each item and deploy IaC backend resources. Each object referenced will be the name used for the environment. 
+
+```hcl
+projects = {
+  "platformlz" = {
+    create_github_env = true # Enable creation of GitHub repository environment.
+  }
+  "workload-app1" = {
+    create_github_env = true
+  }
+  "workload-app2" = {
+    create_github_env = false
+  }
+}
+```
+
+3. Call the child module `vending-iac-backend` from project root module. Supply the required variables to the module declaration. 
+
 ```hcl
 module "vending_iac_backends" {
   for_each                 = var.projects # Repeat for all listed in terraform.tfvars
@@ -52,8 +81,6 @@ module "vending_iac_backends" {
 - Map of values for GitHub configuration, passed in from GitHub Actions workflow. 
 - Name of projects, used to create GitHub environments, provided in TFVARS file. 
 
----
-
 ### Examples
 
 #### Remote State Structure
@@ -62,7 +89,7 @@ module "vending_iac_backends" {
 IaC Subscription: mgt-iac-sub
 ├── Resource Group: mgt-iac-state-rg
 │ ├── Storage Account: mgtiacstatesa
-│ │ ├── Container: tfstate-platform
+│ │ ├── Container: tfstate-platformlz
 │ │ ├── Container: tfstate-workload-app1
 │ │ └── Container: tfstate-workload-app2
 
@@ -86,5 +113,3 @@ Workload Subscriptions (workload-sub-02)
 | azure-mgt-platformlz | TF_BACKEND_KEY | azure-mgt-platformlz.tfstate    |
 | azure-swa-workload01 | TF_BACKEND_CN  | tfstate-azure-app-myapp01       |
 | azure-swa-workload01 | TF_BACKEND_KEY | azure-swa-workload01.tfstate    |
-
----
