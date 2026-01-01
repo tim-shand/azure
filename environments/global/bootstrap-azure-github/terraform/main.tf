@@ -10,6 +10,10 @@
 locals {
   name_full  = "${var.naming["prefix"]}-${var.naming["service"]}-${var.naming["project"]}-${var.naming["environment"]}"
   name_short = "${var.naming["prefix"]}${var.naming["service"]}${var.naming["project"]}"
+  # Naming: Dynamically truncate string to a specified maximum length (max 24 chars for Storage Account naming).
+  sa_name_max_length = 19 # Random integer suffix will add 5 chars, so max = 19 for base name.
+  sa_name_base       = "${local.name_short}sa${random_integer.rndint.result}"
+  sa_name_truncated  = length(local.sa_name_base) > local.sa_name_max_length ? substr(local.sa_name_base, 0, local.sa_name_max_length - 5) : local.sa_name_base
 }
 
 #=====================================================================#
@@ -27,17 +31,13 @@ resource "azuread_application" "entra_iac_app" {
   notes        = "Management: Service Principal for IaC."       # Descriptive notes on purpose of the SP.
   required_resource_access {
     resource_app_id = "00000003-0000-0000-c000-000000000000" # Microsoft Graph API.
-    # resource_access {
-    #   id   = "18a4783c-866b-4cc7-a460-3d5e5662c884" # Application.ReadWrite.OwnedBy
-    #   type = "Role" # Will require a GA to provide consent. 
-    # }
     resource_access {
       id   = "1bfefb4e-e0b5-418b-a88f-73c46d2cc8e9" # Application.ReadWrite.All
-      type = "Role"                                 # Will require a GA to provide consent. 
+      type = "Role"                                 # Will require a GA to provide consent. Required to allow SP to modify itself and others. 
     }
     resource_access {
       id   = "7ab1d382-f21e-4acd-a863-ba3e13f7da61" # Directory.Read.All
-      type = "Role"                                 # Will require a GA to provide consent. 
+      type = "Role"                                 # Will require a GA to provide consent. Required to allow SP to modify itself and others. 
     }
   }
 }
@@ -52,20 +52,20 @@ resource "azuread_service_principal" "entra_iac_sp" {
 # Federated credential for Service Principal (to be used with GitHub OIDC).
 resource "azuread_application_federated_identity_credential" "entra_iac_app_cred" {
   application_id = azuread_application.entra_iac_app.id
-  display_name   = "GithubActions-OIDC-${var.github_config["owner"]}-${var.github_config["repo"]}"
-  description    = "[Bootstrap]: Github CI/CD, federated credential."
+  display_name   = "GitHub-OIDC-${var.github_config["owner"]}-${var.github_config["repo"]}"
+  description    = "[Bootstrap]: GitHub CI/CD, federated credentials."
   audiences      = ["api://AzureADTokenExchange"]
   issuer         = "https://token.actions.githubusercontent.com"
   subject        = "repo:${var.github_config["owner"]}/${var.github_config["repo"]}:ref:refs/heads/${var.github_config["branch"]}"
 }
 
 # Assign RBAC roles for SP at top-level tenant root group.
-resource "azurerm_role_assignment" "rbac_mg_sp1" {
+resource "azurerm_role_assignment" "rbac_sp1" {
   scope                = data.azurerm_management_group.mg_tenant_root.id # Tenant Root MG ID.
   role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.entra_iac_sp.object_id # Service Principal ID.
 }
-resource "azurerm_role_assignment" "rbac_mg_sp2" {
+resource "azurerm_role_assignment" "rbac_sp2" {
   scope                = data.azurerm_management_group.mg_tenant_root.id
   role_definition_name = "User Access Administrator"
   principal_id         = azuread_service_principal.entra_iac_sp.object_id
@@ -84,13 +84,6 @@ resource "azurerm_role_assignment" "rbac_kv_02" {
 #=================================================================#
 # Azure: Backend Resources
 #=================================================================#
-
-# Naming: Dynamically truncate string to a specified maximum length (max 24 chars for Storage Account naming).
-locals {
-  sa_name_max_length = 19 # Random integer suffix will add 5 chars, so max = 19 for base name.
-  sa_name_base       = "${local.name_short}sa${random_integer.rndint.result}"
-  sa_name_truncated  = length(local.sa_name_base) > local.sa_name_max_length ? substr(local.sa_name_base, 0, local.sa_name_max_length - 5) : local.sa_name_base
-}
 
 # Generate a random integer to use for suffix uniqueness.
 resource "random_integer" "rndint" {
@@ -138,15 +131,15 @@ resource "azurerm_role_assignment" "rbac_sa_sp" {
 }
 
 #=================================================================#
-# Github: Secrets and Variables
+# GitHub: Secrets and Variables
 #=================================================================#
 
-# Get data for existing GetHub Repository.
+# Get data for existing GitHub Repository.
 data "github_repository" "gh_repository" {
   full_name = "${var.github_config["owner"]}/${var.github_config["repo"]}"
 }
 
-# Github: Secrets - Add Federated Identity Credential (OIDC).
+# GitHub: Secrets - Add Federated Identity Credential (OIDC).
 resource "github_actions_secret" "gh_secret_tenant_id" {
   repository      = data.github_repository.gh_repository.name
   secret_name     = "ARM_TENANT_ID"
@@ -165,7 +158,7 @@ resource "github_actions_secret" "gh_secret_client_id" {
   plaintext_value = azuread_application.entra_iac_app.client_id # Service Principal federated credential ID.
 }
 
-# Github: Variables - Terraform Backend details (to be called during GHA workflows.)
+# GitHub: Variables - Terraform Backend details (to be called during GHA workflows).
 resource "github_actions_variable" "gh_var_iac_rg" {
   repository    = data.github_repository.gh_repository.name
   variable_name = "TF_BACKEND_RG"
