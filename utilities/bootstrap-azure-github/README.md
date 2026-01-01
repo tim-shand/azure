@@ -41,9 +41,9 @@ This can be helpful when utilizing a monolithic style repository, as all project
 2. Populate with required variable values.
 3. Execute the Powershell script using the desired action parameter, including the name of the `env` file.
 
-```powershell
-# Create
-powershell -file ./scripts/bootstrap-azure-github/bootstrap-azure-github.ps1 -EnvFile "env.psd1" -Action Create
+```shell
+# Execute bootstrapping process. 
+powershell -file utilities/bootstrap-azure-github/bootstrap-azure-github.ps1 -EnvFile env.psd1 -Action Create
 ```
 
 4. Verify all resources have been deployed in Azure and GitHub.
@@ -51,13 +51,11 @@ powershell -file ./scripts/bootstrap-azure-github/bootstrap-azure-github.ps1 -En
 
 ### Remove
 
-1. Download the remote state file from Azure and place in `bootstrap/terraform` directory.
+1. Download the remote state file from Azure and place in `utilities/bootstrap-azure-github/` directory.
 2. Execute Powershell script using the `-Action Remove` parameter.
 3. Approve removal of all created resources when prompted.
 
-```powershell
-# Remove
-powershell -file ./scripts/bootstrap-azure-github/bootstrap-azure-github.ps1 -EnvFile "env.psd1" -Action Remove
+```shell
+# Remove bootstrap resources.  
+powershell -file utilities/bootstrap-azure-github/bootstrap-azure-github.ps1 -EnvFile env.psd1 -Action Remove
 ```
-
----
