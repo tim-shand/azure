@@ -7,8 +7,14 @@ recursive:
   include-main: true
 
 sections:
-  hide: []
-  show: []
+  hide:
+    - footer
+    - modules
+  show:
+    - providers
+    - inputs
+    - outputs
+    - resources
 
 content: ""
 
