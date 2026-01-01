@@ -1,22 +1,23 @@
-#=============================================================================#
-# Azure IaC Backend: Vending
-# Creates: 
-# - Resources for remote state backends (using dedicated subscription).
+/*
+# ----------------------------------------------------------------------------------
+# MODULE: Vending-IaC-Backend
+# DESCRIPTION:
+#   This module is used to deploy GitHub environments and IaC backend resources in Azure, 
+#   using an existing IaC Storage Account to house Blob Containers for remote state. 
+#   Creation of GitHub environments is optional. 
+#
+# USAGE:
+#   Example usage or reference to documentation.
+#
+# NOTES:
 # - REQUIRES: 
 #   - Service Principal: Application.ReadWrite.All
-#   - Github PAT Token: For creating environments, secrets and variables.
-#=============================================================================#
-
-# REQUIRED! :: Github provider MUST be defined in child modules to avoid issues with provider mismatch.
-# Info: https://github.com/integrations/terraform-provider-github/issues/876#issuecomment-1303790559
-
-terraform {
-  required_providers {
-    github = {
-      source = "integrations/github"
-    }
-  }
-}
+#   - GitHub PAT Token: For creating environments, secrets and variables.
+#   - GitHub provider MUST be defined in child modules to avoid issues with provider mismatch.
+#     Info: https://github.com/integrations/terraform-provider-github/issues/876#issuecomment-1303790559
+#
+# ----------------------------------------------------------------------------------
+*/
 
 #=================================================================#
 # Azure: Entra ID Service Principal - Add OIDC Credential
