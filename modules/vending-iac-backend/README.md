@@ -25,7 +25,7 @@ This Terraform module creates Azure and GitHub resources used for Terraform remo
   - Requires `Application.ReadWrite.All` API permission to allow the the Service Principal to update its own credential objects.
 - **GitHub PAT Token**
   - Added as GitHub repository secret, referenced by GitHub Actions workflow.
-  - Requires read/write access to `actions`, `actions variables`, `administration`, `code`, ``environments`, and `secrets`.
+  - Requires read/write access to `actions`, `actions variables`, `administration`, `code`, `environments`, and `secrets`.
 
 ---
 
