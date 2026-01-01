@@ -2,13 +2,16 @@
 
 _Automated, IaC-driven Azure environment implementing governance, automation, and targeting operational best practices._
 
-This repository contains my personal Azure tenant, providing enterprise-style operations and a sandbox for hands-on learning. It includes a platform landing zone, subscription management, monitoring, and CI/CD pipelines, aiming to align with CAF guidelines and best practice principals where possible. 
+This repository contains my _personal_ Azure tenant, providing an enterprise-style environment for hands-on skill development. 
+The project includes a platform landing zone, subscription management, monitoring, and CI/CD pipelines.  
+
+Designed to be cost efficient, utilising free or low-cost options where possible, while maintaining a minimalistic footprint. 
 
 ---
 
-## :cloud: Platform Landing Zone
+## 🚀 Platform Landing Zone
 
-Minimalistic, light-weight platform landing zone designed for personal use or by small organizations. IaC to deploy and manage shared resources, connectivity, governance, policy-as-code, monitoring/observability. 
+Minimalistic, light-weight platform landing zone designed for personal use or by small organizations. IaC to deploy and manage shared resources, connectivity, governance, policy-as-code, monitoring and observability - aiming to align with CAF guidelines and best practice principals where possible.
 
 - **Bootstrapping (Powershell + Terraform)** 
   - Provides the initial setup process, generating required Terraform files, and triggers post-deployment state migration to Azure. 
@@ -24,24 +27,20 @@ Minimalistic, light-weight platform landing zone designed for personal use or by
   - Environments/projects are deployed using the `IaC Backend Vending` module. 
   - Blob Containers per project for remote state management, with individual GitHub environments maintaining isolation between workloads. 
 
-## :gear: Workloads
+## ⚙️ Workloads
 
 - **Personal Website (www.tshand.com)**
   - Static website built with Hugo, deployed to Azure Static Web Apps using Terraform and GitHub workflows. 
   - Separate repositories for infrastructure (this) and source code. 
   - Workflow uses Azure SWA deployment token held as repository secret, configured to trigger build on commit/PR. 
 
----
-
-## :hammer_and_wrench: Tooling & Automation
+## 🛠️ Tooling & Automation
 
 - **Terraform:** IaC tool for provisioning and managing Azure resources. 
 - **Bash/Powershell:** Environment configuration, bootstrapping, automation, and misc utility scripts. 
 - **GitHub Actions:** Providing CI/CD workflows for automating deployment processes. 
 
----
-
-## :jigsaw: Project Structure
+## 🧩 Project Structure
 
 ```shell
 ├── .github                         # GitHub workflows for automating builds.
@@ -61,7 +60,7 @@ Minimalistic, light-weight platform landing zone designed for personal use or by
 
 ---
 
-## :memo: To Do / Future Improvements
+## 📝 To Do / Future Improvements
 
 - [ ] Fix broken module paths. 
 - [ ] Platform Landing Zone: Governance
