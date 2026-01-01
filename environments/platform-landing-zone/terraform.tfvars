@@ -22,7 +22,7 @@ gov_management_group_root = "Core" # Top level Management Group name.
 gov_management_group_list = {
   platform = {
     display_name            = "Platform" # Cosmetic name for Management Group.
-    subscription_identifier = "mgt"      # Used to identify existing subscriptions to add to the Management Group. 
+    subscription_identifier = "mgt"      # Used to identify existing subscriptions to add to the Management Groups. 
   }
   workloads = {
     display_name            = "Workloads"
