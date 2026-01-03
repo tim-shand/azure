@@ -11,8 +11,8 @@ locals {
 # Assign to top-level management group. 
 resource "azurerm_management_group_policy_assignment" "policy_assignment" {
   for_each             = length(local.policies) > 0 ? local.policies : {} # If list not empty, loop each policy name in list.
-  name                 = "Policy-Assignment-${each.value}"
-  policy_definition_id = each.value
+  name                 = "Policy-Assignment-${each.key}"
+  policy_definition_id = each.value.id
   management_group_id  = azurerm_management_group.mg_root.id
 }
 
