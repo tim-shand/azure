@@ -1,8 +1,5 @@
-#=================================================#
-# Platform LZ: Variables
-#=================================================#
-
 # General  -----------------#
+
 variable "subscription_id" {
   description = "Subscription ID for the target changes."
   type        = string
@@ -26,6 +23,7 @@ variable "tags" {
 }
 
 # Governance: Management Groups -----------------#
+
 variable "gov_management_group_root" {
   description = "Name of the top-level Management Group (root)."
   type        = string
@@ -51,22 +49,22 @@ variable "gov_management_group_list" {
   }
 }
 
-# Connectivity: Network (Hub) -----------------#
-variable "hub_vnet_space" {
-  description = "IP address space for Hub vNet."
-  type        = string
-}
-variable "hub_subnets" {
-  description = "Map of hub VNet subnet addresses."
-  type = map(object({ # Use object name as 'name'.
-    name                    = string
-    address                 = list(string)
-    default_outbound_access = bool
-  }))
+# Governance: Policy Assignments -----------------#
+
+variable "gov_builtin_policies" {
+  description = "List of built-in policy initiative display names, required for top-level assignment."
+  type        = list(string) # Simple list fof display names for built-in policy initiatives. 
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9-]+$", var.gov_builtin_policies)) # Only allow alpha-numeric with dashes.
+    error_message = "Only contain letters, numbers, and dashes (-) are allowed. No spaces or other symbols."
+  }
 }
 
-# Logging: Monitoring & Diagnostics -----------------#
-variable "logging_law" {
-  description = "Map of central Log Analytics configuration."
-  type        = map(string)
+variable "gov_policy_allowed_locations" {
+  description = "List of allowed resource locations approved when assigning policy."
+  type        = list(string)
+  validation {
+    condition     = length(var.gov_policy_allowed_locations) >= 1
+    error_message = "At least one allowed location must be provided."
+  }
 }

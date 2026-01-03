@@ -7,6 +7,7 @@
 data "azurerm_subscriptions" "all" {} # Get all subscriptions visible to current user or Service Principal. 
 
 locals {
+  # Get all subscriptions. Iterate through each Management Group, check if each subscription name match the 'subcription_identifier'. 
   # NOTE: Requires subscriptions to be renamed prior to deployment to include 'subcription_identifier' string value from variables file. 
   mg_subscription_ids = {
     for mg_key, mg in var.gov_management_group_list : # Loop each key and its value set in the Management Group map of objects. 
@@ -22,16 +23,16 @@ locals {
 }
 
 # Create top-level management group for the organization.
-resource "azurerm_management_group" "plz_governance_mg_root" {
+resource "azurerm_management_group" "mg_root" {
   name         = lower("${var.naming["org"]}-${var.gov_management_group_root}-mg") # Force lower-case for resource name.
   display_name = var.gov_management_group_root                                     # Display name is purely cosmetic. 
 }
 
 # Create child management groups under root management group.
-resource "azurerm_management_group" "plz_governance_mg" {
-  for_each                   = var.gov_management_group_list                      # Loop for each defined management group in variable. 
-  name                       = lower("${var.naming["org"]}-${each.key}-mg")       # Use key title in naming.
-  display_name               = each.value.display_name                            # Get from each object looped. 
-  parent_management_group_id = azurerm_management_group.plz_governance_mg_root.id # Nest MGs under root management group. 
-  subscription_ids           = local.mg_subscription_ids[each.key]                # Associate subscriptions based on identifier matching. 
+resource "azurerm_management_group" "mg_child" {
+  for_each                   = var.gov_management_group_list                # Loop for each defined management group in variable. 
+  name                       = lower("${var.naming["org"]}-${each.key}-mg") # Use key title in naming.
+  display_name               = each.value.display_name                      # Get from each object looped. 
+  parent_management_group_id = azurerm_management_group.mg_root.id          # Nest MGs under root management group. 
+  subscription_ids           = local.mg_subscription_ids[each.key]          # Associate subscriptions based on identifier matching. 
 }

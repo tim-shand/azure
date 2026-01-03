@@ -17,12 +17,14 @@ variable "tags" {
   default     = {}
 }
 
+# Governance: Management Groups -----------------#
+
 variable "gov_management_group_root" {
   description = "Name of the top-level Management Group (root)."
   type        = string
   validation {
     condition     = can(regex("^[a-zA-Z0-9-]+$", var.gov_management_group_root)) # Only allow alpha-numeric with dashes.
-    error_message = "Management Group IDs can only contain letters, numbers, and dashes (-). No spaces or other symbols are allowed."
+    error_message = "Only contain letters, numbers, and dashes (-) are allowed. No spaces or other symbols."
   }
 }
 
@@ -38,6 +40,26 @@ variable "gov_management_group_list" {
       for key in keys(var.gov_management_group_list) : # Ensure that provided Management Group IDs are valid.
       can(regex("^[a-zA-Z0-9-]+$", key))               # Check each object key to ensure it fits the regex requirements. 
     ])
-    error_message = "Management Group IDs can only contain letters, numbers, and dashes (-). No spaces or other symbols are allowed."
+    error_message = "Only contain letters, numbers, and dashes (-) are allowed. No spaces or other symbols."
+  }
+}
+
+# Governance: Policy Assignments -----------------#
+
+variable "gov_policy_builtin" {
+  description = "List of built-in policy initiative display names, required for top-level assignment."
+  type        = list(string) # Simple list fof display names for built-in policy initiatives. 
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9-]+$", var.gov_policy_builtin)) # Only allow alpha-numeric with dashes.
+    error_message = "Only contain letters, numbers, and dashes (-) are allowed. No spaces or other symbols."
+  }
+}
+
+variable "gov_policy_allowed_locations" {
+  description = "List of allowed resource locations approved when assigning policy."
+  type        = list(string)
+  validation {
+    condition     = length(var.gov_policy_allowed_locations) >= 1
+    error_message = "At least one allowed location must be provided."
   }
 }
