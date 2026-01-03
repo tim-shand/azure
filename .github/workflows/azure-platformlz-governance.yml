@@ -1,4 +1,4 @@
-name: "Deploy - Platform Landing Zone (Azure)"
+name: "Deploy - Platform Landing Zone (STACK=Governance)"
 
 on:
     workflow_dispatch: # Run manually
@@ -27,7 +27,7 @@ permissions:
 
 jobs:
     deploy-azure-platform-lz:
-        name: Deploy - Platform Landing Zone (STACK = Governance)
+        name: "Deploy - Platform Landing Zone (STACK=Governance)"
         runs-on: ubuntu-latest
         timeout-minutes: 30 # The entire job will fail if it runs longer than 'x' minutes.
         environment: azure-mgt-platformlz # Name of the GitHub environment.
