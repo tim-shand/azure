@@ -1,4 +1,4 @@
-name: "Deploy - Web App [wwwtshandcom] (Azure)"
+name: "Deploy: Static Web App [wwwtshandcom] (Azure)"
 
 on:
   workflow_dispatch: # Run manually
@@ -29,7 +29,7 @@ on:
     branches:
       - main
       - dev*
-  
+
   pull_request: # PR
     paths:
       - "platforms/azure/workloads/swa-wwwtshandcom/**"
@@ -47,7 +47,7 @@ jobs:
   deploy:
     name: "Deploy: Static Web App [wwwtshandcom] (Azure)"
     runs-on: ubuntu-latest
-    timeout-minutes: 10  # The entire job will fail if it runs longer than 'x' minutes.
+    timeout-minutes: 10 # The entire job will fail if it runs longer than 'x' minutes.
     environment: ${{ github.event_name == 'workflow_dispatch' && format('azure-swa-wwwtshandcom-{0}', github.event.inputs.deploy_env) || 'azure-swa-wwwtshandcom-dev' }}
 
     defaults:
@@ -76,8 +76,8 @@ jobs:
       RUN_APPLY: ${{ github.event.inputs.tf_action == 'Apply' }}
       RUN_DESTROY: ${{ github.event.inputs.tf_action == 'Destroy' }}
 
-      # Set variable file to use based on environment deployment. 
-      ENV_TFVARS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', github.event.inputs.deploy_env) || 'dev' }} 
+      # Set variable file to use based on environment deployment.
+      ENV_TFVARS: ${{ github.event_name == 'workflow_dispatch' && format('{0}', github.event.inputs.deploy_env) || 'dev' }}
 
     steps:
       - name: Checkout Repository
@@ -89,7 +89,7 @@ jobs:
           terraform_version: 1.13.0
 
       - name: Terraform Init
-        timeout-minutes: 5  # This step will fail if it runs longer than 'x' minutes.
+        timeout-minutes: 5 # This step will fail if it runs longer than 'x' minutes.
         run: |
           terraform init \
           -backend-config="resource_group_name=$TF_BACKEND_RG" \
@@ -109,22 +109,22 @@ jobs:
 
       - name: Terraform Plan
         if: env.RUN_PLAN == 'true'
-        timeout-minutes: 10  # This step will fail if it runs longer than 'x' minutes.
+        timeout-minutes: 10 # This step will fail if it runs longer than 'x' minutes.
         run: |
           terraform plan -out=terraform.plan -var-file="env-$ENV_TFVARS.tfvars" \
           -var-file=cloudflare.tfvars \
           -var="subscription_id=$ARM_SUBSCRIPTION_ID"
-        
+
       - name: Terraform Apply
         if: env.RUN_APPLY == 'true'
         timeout-minutes: 25 # Fail if it runs longer than 'x' minutes.
         run: |
           terraform apply --auto-approve terraform.plan
-    
+
       - name: Terraform Destroy
         if: env.RUN_DESTROY == 'true'
         timeout-minutes: 25 # Fail if it runs longer than 'x' minutes.
         run: |
           terraform destroy --auto-approve -var-file="env-$ENV_TFVARS.tfvars" \
           -var-file=cloudflare.tfvars \
-          -var="subscription_id=$ARM_SUBSCRIPTION_ID" 
+          -var="subscription_id=$ARM_SUBSCRIPTION_ID"
