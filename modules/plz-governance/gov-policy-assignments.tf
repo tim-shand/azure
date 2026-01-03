@@ -11,7 +11,7 @@ locals {
 # Assign to top-level management group. 
 resource "azurerm_management_group_policy_assignment" "policy_assignment" {
   for_each             = length(local.policies) > 0 ? local.policies : {} # If list not empty, loop each policy name in list.
-  name                 = "Policy-Assignment-${each.key}"
+  name                 = substr(each.value.display_name, 0, 24)
   policy_definition_id = each.value.id
   management_group_id  = azurerm_management_group.mg_root.id
 }
@@ -20,15 +20,17 @@ resource "azurerm_management_group_policy_assignment" "policy_assignment" {
 
 # Custom Assignment: Allowed Locations 
 resource "azurerm_management_group_policy_assignment" "custom" {
-  name                 = "Policy-Assignment-Allowed-Locations"
+  name                 = "Allowed-Locations"
   policy_definition_id = "/providers/Microsoft.Authorization/policyDefinitions/e56962a6-4747-49cd-b67b-bf8b01975c4c"
   management_group_id  = azurerm_management_group.mg_root.id
   parameters = jsonencode({
-    listOfAllowedLocations = { value = var.gov_policy_allowed_locations }
+    listOfAllowedLocations = {
+      value = var.gov_policy_allowed_locations
+    }
   })
   lifecycle {
     precondition {
-      condition     = var.gov_policy_allowed_locations >= 1
+      condition     = length(var.gov_policy_allowed_locations) >= 1
       error_message = "At least one allowed location must be provided."
     }
   }
