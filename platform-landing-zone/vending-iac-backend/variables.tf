@@ -25,7 +25,7 @@ variable "projects" {
 }
 
 variable "github_config" {
-  description = "Map of values for Github configuration."
+  description = "Map of values for GitHub configuration."
   type        = map(string)
 }
 

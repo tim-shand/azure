@@ -1,7 +1,7 @@
 # Stack: Governance ----------------------------------#
 
 module "plz_governance" {
-  source                       = "../../../modules/plz-governance"
+  source                       = "../../modules/plz-governance"
   location                     = var.location
   naming                       = var.naming
   tags                         = var.tags

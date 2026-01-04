@@ -2,14 +2,14 @@
 # Azure Bootstrap: Main
 # Creates: 
 # - Service Principal, Federated Credentials (OIDC) for IaC.
-# - Github repository secrets and variables.
+# - GitHub repository secrets and variables.
 # - Resources for remote state backends (dedicated subscription).
 #=================================================================#
 
 # Set default naming conventions.
 locals {
   name_full  = "${var.naming["prefix"]}-${var.naming["service"]}-${var.naming["project"]}-${var.naming["environment"]}"
-  name_short = "${var.naming["prefix"]}${var.naming["service"]}${var.naming["project"]}"
+  name_short = "${var.naming["prefix"]}${var.naming["service"]}${var.naming["project"]}${var.naming["environment"]}"
   # Naming: Dynamically truncate string to a specified maximum length (max 24 chars for Storage Account naming).
   sa_name_max_length = 19 # Random integer suffix will add 5 chars, so max = 19 for base name.
   sa_name_base       = "${local.name_short}sa${random_integer.rndint.result}"
@@ -100,18 +100,19 @@ resource "azurerm_resource_group" "iac_rg" {
 
 # Storage Account.
 resource "azurerm_storage_account" "iac_sa" {
-  name                     = "${local.sa_name_truncated}${random_integer.rndint.result}"
-  resource_group_name      = azurerm_resource_group.iac_rg.name
-  location                 = azurerm_resource_group.iac_rg.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  account_kind             = "StorageV2"
-  tags                     = var.tags
+  name                       = "${local.sa_name_truncated}${random_integer.rndint.result}"
+  resource_group_name        = azurerm_resource_group.iac_rg.name
+  location                   = azurerm_resource_group.iac_rg.location
+  account_tier               = "Standard"
+  account_replication_type   = "LRS"
+  account_kind               = "StorageV2"
+  tags                       = var.tags
+  https_traffic_only_enabled = true # Enforce secure file transfer. 
 }
 
 # Storage Account Blob Container.
 resource "azurerm_storage_container" "iac_sa_cn" {
-  name                  = "tfstate-azure-${var.naming["project"]}"
+  name                  = "tfstate-${var.naming["service"]}-backends"
   storage_account_id    = azurerm_storage_account.iac_sa.id
   container_access_type = "private"
 }
@@ -180,5 +181,5 @@ resource "github_actions_variable" "gh_var_iac_cn" {
 resource "github_actions_variable" "gh_var_iac_key" {
   repository    = data.github_repository.gh_repository.name
   variable_name = "TF_BACKEND_KEY" # Terraform state file name.
-  value         = "azure-${var.naming["service"]}-${var.naming["project"]}-backends.tfstate"
+  value         = "azure-${var.naming["service"]}-backends.tfstate"
 }

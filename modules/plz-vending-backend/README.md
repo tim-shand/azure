@@ -7,8 +7,8 @@ This Terraform module creates Azure and GitHub resources used for Terraform remo
 ## 🌟 Features
 
 - Automates the provisioning of required resources for new Terraform backends and secure CI/CD connectivity. 
-- Creates a GitHub Actions environment per workload, containing workload specific variables for workload Terraform backend. 
-- Creates a workload specific Blob Container in the existing Storage Account, within the dedicated IaC Azure subscription. 
+- Creates a GitHub Actions environment per project, containing project specific variables for project Terraform backend. 
+- Creates a project specific Blob Container in the existing Storage Account, within the dedicated IaC Azure subscription. 
 - Adds federated credentials (OIDC) for each GitHub Actions environment to the IaC Service Principal in Entra ID. 
 - Enables container level RBAC role assignment to manage access and permission to state files. 
 - **NOTE:** Requires _MANUAL_ actions:

@@ -31,10 +31,10 @@ data "azuread_application" "this_sp" {
 
 # Federated credential for Service Principal (to be used with GitHub OIDC).
 resource "azuread_application_federated_identity_credential" "entra_iac_app_cred" {
-  count          = var.create_github_env ? 1 : 0 # Only needed is GH environment is created.
+  count          = var.create_github_env ? 1 : 0 # Only needed if GH environment is created.
   application_id = data.azuread_application.this_sp.id
   display_name   = "oidc-github-${var.github_config["repo"]}-${var.project_name}"
-  description    = "[Github-Actions]: ${var.github_config["owner"]}/${var.github_config["repo"]} ENV:${var.project_name}"
+  description    = "[GitHub-Actions]: ${var.github_config["owner"]}/${var.github_config["repo"]} ENV:${var.project_name}"
   audiences      = ["api://AzureADTokenExchange"]
   issuer         = "https://token.actions.githubusercontent.com"
   subject        = "repo:${var.github_config["owner"]}/${var.github_config["repo"]}:environment:${var.project_name}"

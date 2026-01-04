@@ -12,7 +12,6 @@ naming = {
 
 # Tags (assigned to all bootstrap resources).
 tags = {
-  Project     = "PlatformLandingZone" # Name of the project the resources are for.
-  Environment = "dev"                 # dev, tst, prd
-  Owner       = "CloudOps"            # Team responsible for the resources.
+  Project = "PlatformLandingZone" # Name of the project the resources are for.
+  Owner   = "CloudOps"            # Team responsible for the resources.
 }

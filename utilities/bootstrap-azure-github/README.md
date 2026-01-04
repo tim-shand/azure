@@ -26,7 +26,7 @@ This can be helpful when utilizing a monolithic style repository, as all project
   - Uses federated credentials (OIDC) for authentication with GitHub Actions workflows.
 - **GitHub: Repository Secrets and Variables**
   - Adds Entra ID service principal details to repository secrets.
-  - Added AZure resources used for remote backend storage to GitHub Actions variables.
+  - Added Azure resources used for remote backend storage to GitHub Actions variables.
 - **Azure: Remote Backend Resources**
   - Uses dedicated Azure subscription to contain remote states for all IaC projects.
   - **Resource Group:** Logical container for IaC related resources.

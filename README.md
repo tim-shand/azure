@@ -1,62 +1,56 @@
-# Azure: Platform Landing Zone + Workloads
+# Azure: Platform Landing Zone
 
-_Automated, IaC-driven Azure environment implementing governance, automation, and targeting operational best practices._
+_Automated, IaC-driven Azure platform landing zone, implementing governance, automation, and targeting operational best practices._
 
-This repository contains my _personal_ Azure tenant, providing an enterprise-style environment for hands-on skill development. 
-The project includes a platform landing zone, subscription management, monitoring, and CI/CD pipelines.  
-
+This repository contains my production Azure tenant, providing an enterprise-style environment for hands-on skill development. 
+The project includes a platform landing zone, providing centralised shared services for workloads deployed within the tenant.   
 Designed to be cost efficient, utilising free or low-cost options where possible, while maintaining a minimalistic footprint. 
 
 ---
 
 ## 🚀 Platform Landing Zone
 
-Light-weight platform landing zone designed for personal use or by small organizations. IaC to deploy and manage shared resources, connectivity, governance, policy-as-code, monitoring and observability - aiming to align with CAF guidelines and best practice principals where possible.
+Light-weight platform landing zone designed for personal use or by small organizations. Utilises IaC to deploy and manage shared resources, connectivity, governance, policy-as-code, monitoring and observability - aiming to align with CAF guidelines and best practice principals where possible.
 
 - **Bootstrapping (Powershell + Terraform)** 
-  - Provides the initial setup process, generating required Terraform files, and triggers post-deployment state migration to Azure. 
-  - Creates Entra ID Service Principal, secured with Federated Credentials (OIDC), adding the details as secrets to GitHub repository. 
-- **Governance & Policies**
-  - Management groups, RBAC, and policy enforcement automated via Terraform modules, ensures scalable governance. 
-- **Connectivity: Hub-Spoke Architecture**
-  - Hub VNet for shared services with workload VNets peered as spokes for isolating environments. 
-- **Observability & Monitoring**
-  - Centralized Log Analytics workspace with diagnostic settings and alerting. 
+  - Provides the initial setup process for IaC.
+  - Using templated Terraform configuration and triggering post-deployment state migration to new resources in Azure. 
+  - Creates Entra ID Service Principal, secured with Federated Credentials (OIDC), adding the details as secrets into GitHub repository. 
+- **Governance**
+  - Management groups for policy hierarchy and subscription management. 
+  - RBAC and policy assignments providing guard rails to secure the environment. 
+- **Connectivity**
+  - Hub-Spoke architecture, providing centralised network management and control. 
+  - Workload VNets peered as spokes, isolating and securing environments. 
+- **Management**
+  - Centralized Log Analytics workspace for monitoring, with diagnostic settings applied via policy. 
+  - Microsoft Defender for Cloud (Foundational CSPM) providing security posture information and recommendations. 
+- **Identity**
+  - Create groups within Entra ID for RBAC assignment. 
+  - Automate the creation and management of groups, users, and PIM role assignments. 
 - **IaC Backend Vending** 
-  - Uses a dedicated subscription to contain all remote Terraform states. 
-  - Environments/projects are deployed using the `IaC Backend Vending` module. 
-  - Blob Containers per project for remote state management, with individual GitHub environments maintaining isolation between workloads. 
+  - Uses a dedicated Azure subscription, with Blob Containers per project to contain remote Terraform states for **all** projects. 
+  - Custom `IaC Backend Vending` module to deploy Azure backend resources and GitHub environment configuration. 
+  - Enables secure, intentional access via RBAC, while maintaining isolation between workloads. 
 
-## ⚙️ Workloads
+---
 
-- **Personal Website (www.tshand.com)**
-  - Static website built with Hugo, deployed to Azure Static Web Apps using Terraform and GitHub workflows. 
-  - Separate repositories for infrastructure (this) and source code. 
-  - Workflow uses Azure SWA deployment token held as repository secret, configured to trigger build on commit/PR. 
+## 📊 Stack Deployment
+
+1. **Bootstrap:** Manual process using Powershell and Terraform. 
+2. **Vending IaC Backend:** Provision backend resources in Azure and GitHub environments per stack. 
+2. **Management:** Create monitoring/observability resources, referenced by policies in Governance stack. 
+3. **Governance:** Deploy Management Group structure and assign policies. 
+4. **Connectivity:** Deploy networking resources providing hub-spoke arcitecture. 
+5. **Identity:** Deploy Entra ID groups and RBAC assignments. 
+
+---
 
 ## 🛠️ Tooling & Automation
 
-- **Terraform:** IaC tool for provisioning and managing Azure resources. 
-- **Bash/Powershell:** Environment configuration, bootstrapping, automation, and misc utility scripts. 
-- **GitHub Actions:** Providing CI/CD workflows for automating deployment processes. 
-
-## 🧩 Project Structure
-
-```shell
-├── .github                         # GitHub workflows for automating builds.
-├── docs                            # Design diagrams, build documents, images. 
-├── environments                    # Global resources, landing zone, and workloads.  
-│   ├── global
-│   ├── platform-landing-zone       # Azure platform landing zone. 
-│   └── workloads                   # Workloads running on Azure. 
-├── modules                         # Terraform modules directory. 
-│   ├── plz-governance
-│   ├── plz-network-hub
-│   ├── plz-observability
-│   ├── swa-free-cloudflaredns
-│   ├── vending-iac-backend
-└── utilities                       # Utilities and tools used within the project. 
-```
+- **Terraform:** Cloud-agnostic Infra-as-Code tool for deploying and managing resources in Azure.  
+- **Powershell:** Environment configuration, bootstrapping, automation, and misc utility scripts. 
+- **GitHub Actions:** Providing CI/CD workflows for automating deployment of processes. 
 
 ---
 
@@ -64,7 +58,6 @@ Light-weight platform landing zone designed for personal use or by small organiz
 
 - [ ] Fix broken module paths. 
 - [ ] Platform Landing Zone: Governance
-- [ ] Platform Landing Zone: Observability
+- [ ] Platform Landing Zone: Management
 - [ ] Platform Landing Zone: Connectivity
-- [ ] Platform Landing Zone: Security
 - [ ] Subscription Vending
