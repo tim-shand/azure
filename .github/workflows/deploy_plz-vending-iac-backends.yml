@@ -16,7 +16,7 @@ on:
         paths:
             - "env/vending-iac-backend.tfvars" # Changes to the TFVARS file.
             - "platform-landing-zone/plz-vending-iac-backends/**" # Changes to the stack root module.
-            - "modules/plz-vending-iac-backends/**" # Changes to the module.
+            - "modules/plz-vending-iac-backend/**" # Changes to the module.
             - ".github/workflows/deploy_plz-vending-iac-backends.yml" # Changes to the workflow itself.
         branches:
             - main # Trigger on pull request to main branch.
