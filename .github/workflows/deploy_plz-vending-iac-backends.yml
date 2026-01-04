@@ -15,9 +15,9 @@ on:
     pull_request: # Pull Request
         paths:
             - "env/vending-iac-backend.tfvars" # Changes to the TFVARS file.
-            - "platform-landing-zone/plz-vending-iac-backends/**" # Changes to the stack root module.
-            - "modules/plz-vending-iac-backend/**" # Changes to the module.
-            - ".github/workflows/deploy_plz-vending-iac-backends.yml" # Changes to the workflow itself.
+            - "platform-landing-zone/stack-vending-iac-backends/**" # Changes to the stack root module.
+            - "modules/vending-iac-backend/**" # Changes to the module.
+            - ".github/workflows/deploy_vending-iac-backends.yml" # Changes to the workflow itself.
         branches:
             - main # Trigger on pull request to main branch.
 
@@ -33,7 +33,7 @@ jobs:
         timeout-minutes: 30 # The entire job will fail if it runs longer than 'x' minutes.
         defaults:
             run: # Set job defaults for 'run' commands.
-                working-directory: ./platform-landing-zone/plz-vending-iac-backends
+                working-directory: ./platform-landing-zone/stack-vending-iac-backends
         env:
             # Backend (IaC subscription)
             TF_BACKEND_RG: ${{ vars.TF_BACKEND_RG }} # Backend: Resource Group
