@@ -28,7 +28,7 @@ resource "azuread_application" "entra_iac_app" {
   display_name = "${local.name_full}-sp"                        # Use long naming convention.
   logo_image   = filebase64("./logo.png")                       # Image file for SP logo.
   owners       = [data.azuread_client_config.current.object_id] # Set current user as owner.
-  notes        = "Management: Service Principal for IaC."       # Descriptive notes on purpose of the SP.
+  notes        = "Bootstrap: Service Principal for IaC."        # Descriptive notes on purpose of the SP.
   required_resource_access {
     resource_app_id = "00000003-0000-0000-c000-000000000000" # Microsoft Graph API.
     resource_access {
@@ -50,19 +50,19 @@ resource "azuread_service_principal" "entra_iac_sp" {
 }
 
 # Federated credential for Service Principal (to be used with GitHub OIDC).
-resource "azuread_application_federated_identity_credential" "github-repo-main" {
+resource "azuread_application_federated_identity_credential" "github_repo_main" {
   application_id = azuread_application.entra_iac_app.id
-  display_name   = "GitHub-OIDC-${var.github_config["owner"]}-${var.github_config["repo"]}-${var.github_config["branch"]}"
-  description    = "[Bootstrap]: GitHub CI/CD, federated credentials."
+  display_name   = "oidc-github_${var.github_config["owner"]}_${var.github_config["repo"]}_${var.github_config["branch"]}"
+  description    = "[Bootstrap]: GitHub OIDC federated credentials (${var.github_config["branch"]})."
   audiences      = ["api://AzureADTokenExchange"]
   issuer         = "https://token.actions.githubusercontent.com"
   subject        = "repo:${var.github_config["owner"]}/${var.github_config["repo"]}:ref:refs/heads/${var.github_config["branch"]}"
 }
 
-resource "azuread_application_federated_identity_credential" "github-repo-pullrequest" {
+resource "azuread_application_federated_identity_credential" "github_repo_pullrequest" {
   application_id = azuread_application.entra_iac_app.id
-  display_name   = "GitHub-OIDC-${var.github_config["owner"]}-${var.github_config["repo"]}-pull_request"
-  description    = "[Bootstrap]: GitHub CI/CD, federated credentials."
+  display_name   = "oidc-github_${var.github_config["owner"]}_${var.github_config["repo"]}_pull-request"
+  description    = "[Bootstrap]: GitHub OIDC federated credentials (Pull Request)."
   audiences      = ["api://AzureADTokenExchange"]
   issuer         = "https://token.actions.githubusercontent.com"
   subject        = "repo:${var.github_config["owner"]}/${var.github_config["repo"]}:pull_request"
@@ -121,7 +121,7 @@ resource "azurerm_storage_account" "iac_sa" {
 
 # Storage Account Blob Container.
 resource "azurerm_storage_container" "iac_sa_cn" {
-  name                  = "tfstate-${var.naming["service"]}-backends"
+  name                  = "tfstate-${var.naming["service"]}-management"
   storage_account_id    = azurerm_storage_account.iac_sa.id
   container_access_type = "private"
 }
@@ -190,5 +190,5 @@ resource "github_actions_variable" "gh_var_iac_cn" {
 resource "github_actions_variable" "gh_var_iac_key" {
   repository    = data.github_repository.gh_repository.name
   variable_name = "TF_BACKEND_KEY" # Terraform state file name.
-  value         = "azure-${var.naming["service"]}-backends.tfstate"
+  value         = "azure-${var.naming["service"]}-management.tfstate"
 }
