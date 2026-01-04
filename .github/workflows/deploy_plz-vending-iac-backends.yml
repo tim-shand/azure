@@ -14,9 +14,9 @@ on:
                     - "Destroy"
     pull_request: # Pull Request
         paths:
-            - "env/vending-iac-backends.tfvars" # Changes to the TFVARS file.
+            - "env/vending-iac-backend.tfvars" # Changes to the TFVARS file.
             - "platform-landing-zone/plz-vending-iac-backends/**" # Changes to the stack root module.
-            - "modules/vending-iac-backend/**"
+            - "modules/plz-vending-iac-backends/**" # Changes to the module.
             - ".github/workflows/deploy_plz-vending-iac-backends.yml" # Changes to the workflow itself.
         branches:
             - main
