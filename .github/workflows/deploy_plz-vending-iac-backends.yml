@@ -40,6 +40,7 @@ jobs:
             TF_BACKEND_SA: ${{ vars.TF_BACKEND_SA }} # Backend: Storage Account
             TF_BACKEND_CONTAINER: ${{ vars.TF_BACKEND_CONTAINER }} # Backend: Blob Container
             TF_BACKEND_KEY: ${{ vars.TF_BACKEND_KEY }} # Backend: State file name
+            TF_VARS_DIR: "../../env" # Location of variable files in relation to working directory.
 
             # Azure OIDC Auth
             ARM_USE_OIDC: true
@@ -85,7 +86,7 @@ jobs:
               run: |
                   REPO=$(echo "${{ github.repository }}" | cut -d'/' -f2)
                   terraform plan -out=terraform.plan \
-                  -var-file="../../env/global.tfvars" -var-file="../../env/vending-iac-backends.tfvars" \
+                  -var-file="$TF_VARS_DIR/global.tfvars" -var-file="$TF_VARS_DIR/vending-iac-backends.tfvars" \
                   -var="iac_storage_account_rg=$TF_BACKEND_RG" \
                   -var="iac_storage_account_name=$TF_BACKEND_SA" \
                   -var="subscription_id=$ARM_SUBSCRIPTION_ID_IAC" \
@@ -102,7 +103,8 @@ jobs:
               if: env.RUN_DESTROY == 'true'
               timeout-minutes: 15 # Fail if it runs longer than 'x' minutes.
               run: |
-                  terraform destroy --auto-approve -var-file=terraform.tfvars \
+                  terraform destroy --auto-approve \
+                  -var-file="$TF_VARS_DIR/global.tfvars" -var-file="$TF_VARS_DIR/vending-iac-backends.tfvars" \
                   -var="iac_storage_account_rg=$TF_BACKEND_RG" \
                   -var="iac_storage_account_name=$TF_BACKEND_SA" \
                   -var="subscription_id=$ARM_SUBSCRIPTION_ID_IAC" \
