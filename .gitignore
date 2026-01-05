@@ -36,6 +36,7 @@ tfplan.*
 crash.log
 crash.*.log
 backend.conf
+bootstrap.tfvars
 # Allow example or default TFVARS file.
 !example.tfvars
 !terraform.tfvars
