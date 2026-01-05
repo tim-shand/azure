@@ -5,10 +5,10 @@
 # Service Principal ----------------------------------------------------|
 # Create App Registration and Service Principal for IaC.
 resource "azuread_application" "entra_iac_app" {
-  display_name = "${var.naming.prefix}-${var.naming.service}-${var.naming.project}-sp" # Service Principal name. 
-  logo_image   = filebase64("./logo.png")                                              # Image file for logo.
-  owners       = [data.azuread_client_config.current.object_id]                        # Set current user as owner.
-  notes        = "Bootstrap: Service Principal for IaC."                               # Descriptive notes on purpose of the SP.
+  display_name = "${var.naming.prefix}-${var.naming.service}-${var.naming.project}-deploy-sp" # Service Principal name. 
+  logo_image   = filebase64("./logo.png")                                                     # Image file for logo.
+  owners       = [data.azuread_client_config.current.object_id]                               # Set current user as owner.
+  notes        = "Bootstrap: Service Principal for IaC."                                      # Descriptive notes on purpose of the SP.
   required_resource_access {
     resource_app_id = "00000003-0000-0000-c000-000000000000" # Microsoft Graph API. Will require a GA to provide consent.
     resource_access {
