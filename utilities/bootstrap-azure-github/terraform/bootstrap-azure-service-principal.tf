@@ -2,6 +2,7 @@
 # Bootstrap: Azure - Service Principal, OIDC Credentials, RBAC
 #=================================================================#
 
+# Service Principal ----------------------------------------------------|
 # Create App Registration and Service Principal for IaC.
 resource "azuread_application" "entra_iac_app" {
   display_name = "${var.naming.prefix}-${var.naming.service}-${var.naming.project}-sp" # Service Principal name. 
@@ -32,25 +33,7 @@ resource "azuread_service_principal" "entra_iac_sp" {
   owners                       = [data.azuread_client_config.current.object_id]
 }
 
-# Federated credential for Service Principal (to be used with GitHub OIDC).
-resource "azuread_application_federated_identity_credential" "repo_main" {
-  application_id = azuread_application.entra_iac_app.id
-  display_name   = "oidc-github_${var.repo_config.owner}_${var.repo_config.repo}_${var.repo_config.branch}"
-  description    = "[Bootstrap]: OIDC federated credentials (${var.repo_config.branch})."
-  audiences      = ["api://AzureADTokenExchange"]
-  issuer         = "https://token.actions.githubusercontent.com"
-  subject        = "repo:${var.repo_config.owner}/${var.repo_config.repo}:ref:refs/heads/${var.repo_config.branch}"
-}
-
-resource "azuread_application_federated_identity_credential" "repo_pr" {
-  application_id = azuread_application.entra_iac_app.id
-  display_name   = "oidc-github_${var.repo_config.owner}_${var.repo_config.repo}_pull-request"
-  description    = "[Bootstrap]: OIDC federated credentials (Pull Request). Allows pipeline to execute on pull request."
-  audiences      = ["api://AzureADTokenExchange"]
-  issuer         = "https://token.actions.githubusercontent.com"
-  subject        = "repo:${var.repo_config.owner}/${var.repo_config.repo}:pull_request"
-}
-
+# RBAC Role Assignments ----------------------------------------------------|
 # Assign RBAC roles for SP at top-level tenant root group. 
 # NOTE: Required to deploy Management Group structure in Governance stack, and read/write to Key Vaults. 
 resource "azurerm_role_assignment" "rbac_sp_contrib" {
@@ -72,4 +55,35 @@ resource "azurerm_role_assignment" "rbac_sp_kvo" {
   scope                = data.azurerm_management_group.mg_tenant_root.id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = azuread_service_principal.entra_iac_sp.object_id
+}
+
+# OIDC Federated Credentials ----------------------------------------------------|
+# Federated credential for Service Principal.
+resource "azuread_application_federated_identity_credential" "repo_main" {
+  application_id = azuread_application.entra_iac_app.id
+  display_name   = "oidc_${var.repo_config.owner}_${var.repo_config.repo}_MAIN"
+  description    = "[REPO_MAIN]: OIDC federated credentials (${var.repo_config.branch}). Allows pipeline from main branch."
+  audiences      = ["api://AzureADTokenExchange"]
+  issuer         = "https://token.actions.githubusercontent.com"
+  subject        = "repo:${var.repo_config.owner}/${var.repo_config.repo}:ref:refs/heads/${var.repo_config.branch}"
+}
+
+resource "azuread_application_federated_identity_credential" "repo_pr" {
+  application_id = azuread_application.entra_iac_app.id
+  display_name   = "oidc_${var.repo_config.owner}_${var.repo_config.repo}_PR"
+  description    = "[REPO_PR]: OIDC federated credentials (Pull Request). Allows pipeline to execute on pull request."
+  audiences      = ["api://AzureADTokenExchange"]
+  issuer         = "https://token.actions.githubusercontent.com"
+  subject        = "repo:${var.repo_config.owner}/${var.repo_config.repo}:pull_request"
+}
+
+# OIDC for each deployment stack/environment. Required for each repo environment. 
+resource "azuread_application_federated_identity_credential" "repo_pr" {
+  for_each       = local.repo_env_stacks # Using map of stacks that require repo environment.
+  application_id = azuread_application.entra_iac_app.id
+  display_name   = "oidc_${var.repo_config.owner}_${var.repo_config.repo}_ENV_${each.value.stack_name}"
+  description    = "[REPO_ENV]: OIDC federated credentials (${each.value.stack_name}). Allows pipeline to execute from repo environment."
+  audiences      = ["api://AzureADTokenExchange"]
+  issuer         = "https://token.actions.githubusercontent.com"
+  subject        = "repo:${var.repo_config.owner}/${var.repo_config.repo}:environment:${each.value.stack_name}"
 }
