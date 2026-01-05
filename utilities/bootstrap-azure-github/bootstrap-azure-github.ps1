@@ -403,6 +403,7 @@ terraform {
     }
     else {
         Write-Host -ForegroundColor $WRN "[!] Terraform state migration aborted by user."
+        Remove-Item -Path "$PSScriptRoot/terraform/backend.tf" -Force -ErrorAction SilentlyContinue
         exit 1
     }
 }
@@ -410,7 +411,7 @@ terraform {
 #================================================#
 # MAIN: Stage 6 - Clean Up
 #================================================#
-#Remove-Item -Path "$PSScriptRoot/terraform/backend.tf" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$PSScriptRoot/terraform/backend.tf" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$PSScriptRoot/terraform/bootstrap.tfvars" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$PSScriptRoot/terraform/bootstrap.plan" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$PSScriptRoot/terraform/.terraform*" -Recurse -Force -ErrorAction SilentlyContinue
