@@ -48,7 +48,7 @@ $requiredApps = @(
         Command     = "gh"; 
         AuthCheck   = "gh api user | ConvertFrom-JSON"; 
         LoginCmd    = "gh auth login";
-        AccessCheck = '(gh api /repos/$($config.github_config.Owner)/$($config.github_config.Repo)/collaborators/$($config.github_config.Owner)/permission | ConvertFrom-JSON).user.permissions'
+        AccessCheck = '(gh api /repos/$($config.repo_config.Owner)/$($config.repo_config.Repo)/collaborators/$($config.repo_config.Owner)/permission | ConvertFrom-JSON).user.permissions'
     }
 )
 # Set direcotry for Terraform files.
@@ -185,9 +185,9 @@ Write-Host "- Subscription ID: $($azAccess.subscriptionId)"
 Write-Host "- Subscription Name: $($azAccess.displayName)"
 Write-Host "- Default Location: $($config.global.location)"
 Write-Host ""
-Write-Host -ForegroundColor $HD1 "GitHub: " -NoNewLine; Write-Host -ForegroundColor Yellow "(User: $($ghSession.login))"
+Write-Host -ForegroundColor $HD1 "Repository: " -NoNewLine; Write-Host -ForegroundColor Yellow "(User: $($ghSession.login))"
 Write-Host "- Owner/Org: $(($ghSession.html_url).Replace('https://github.com/',''))"
-Write-Host "- Repository: $($config.github_config.repo) [$($config.github_config.Branch)]"
+Write-Host "- Repository: $($config.repo_config.repo) [$($config.repo_config.Branch)]"
 Write-Host "- Access: $(($ghAccess.PSObject.Properties | Where-Object {$_.Value -eq $true} | ForEach-Object {$_.Name}) -join ", ")"
 Write-Host ""
 Write-Host -ForegroundColor $HD1 "Deployment Action: " -NoNewLine; 
@@ -223,10 +223,10 @@ tags = {
   Owner       = "$($config.tags.Owner)" # Team responsible for the resources. 
   Creator     = "$($config.tags.Creator)" # Person or process that created the initial resources. 
 }
-github_config = {
-  owner  = "$($config.github_config.owner)" # GitHub: Org/owner, target repository, and branch name.
-  repo   = "$($config.github_config.repo)"
-  branch = "$($config.github_config.branch)"
+repo_config = {
+  owner  = "$($config.repo_config.owner)" # Org/owner, target repository, and branch name.
+  repo   = "$($config.repo_config.repo)"
+  branch = "$($config.repo_config.branch)"
 }
 
 # Stacks: Configuration ---------------------------------|
@@ -235,29 +235,29 @@ deployment_stacks = {
       bootstrap = {
       stack_name        = "iac-bootstrap"
       subscription_id   = "$($config.global.subscription_iac_bootstrap)"
-      create_github_env = false # No need for separate bootstrap environment in GitHub. 
+      create_repo_env = false # No need for separate bootstrap environment in GitHub. 
     }
   }
   platform = {
     connectivity = {
       stack_name        = "plz-connectivity"
       subscription_id   = "$($config.global.subscription_plz_connectivity)"
-      create_github_env = true
+      create_repo_env = true
     }
     governance = {
       stack_name        = "plz-governance"
       subscription_id   = "$($config.global.subscription_plz_governance)"
-      create_github_env = true
+      create_repo_env = true
     }
     management = {
       stack_name        = "plz-management"
       subscription_id   = "$($config.global.subscription_plz_management)"
-      create_github_env = true
+      create_repo_env = true
     }
     identity = {
       stack_name        = "plz-identity"
       subscription_id   = "$($config.global.subscription_plz_identity)"
-      create_github_env = true
+      create_repo_env = true
     }
   }
   workloads = {
@@ -359,9 +359,9 @@ if (!($Action -eq "Remove")) {
     # Get Github variables from Terraform output.
     Write-Host -ForegroundColor $HD1 "[*] Retrieving Terraform backend details from output... " -NoNewLine
     Try {
-        $tf_rg = terraform -chdir="$($tfDir)" output -raw out_bootstrap_iac_rg
-        $tf_sa = terraform -chdir="$($tfDir)" output -raw out_bootstrap_iac_sa
-        $tf_cn = terraform -chdir="$($tfDir)" output -raw out_bootstrap_iac_cn
+        $tf_rg = terraform -chdir="$($tfDir)" output -raw bootstrap_iac_rg
+        $tf_sa = terraform -chdir="$($tfDir)" output -raw bootstrap_iac_sa
+        $tf_cn = terraform -chdir="$($tfDir)" output -raw bootstrap_iac_cn
         Write-Host -ForegroundColor $INF "PASS"
         Write-Host ""
         Write-Host "- Resource Group: $tf_rg"
