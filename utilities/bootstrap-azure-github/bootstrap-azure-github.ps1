@@ -395,6 +395,7 @@ terraform {
         Write-Host -ForegroundColor $HD1 "[*] Migrating Terraform state to Azure... " -NoNewline
         if (terraform -chdir="$($tfDir)" init -migrate-state -force-copy -input=false) {
             Write-Host -ForegroundColor $INF "PASS"
+            #Remove-Item -Path "$PSScriptRoot/terraform/*.tfstate*" -Force -ErrorAction SilentlyContinue
         }
         else {
             Write-Host -ForegroundColor $ERR "FAIL"
@@ -410,16 +411,14 @@ terraform {
 #================================================#
 # MAIN: Stage 6 - Clean Up
 #================================================#
-#Remove-Item -Path "$PSScriptRoot/terraform/backend.tf" -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "$PSScriptRoot/terraform/bootstrap.tfvars" -Force -ErrorAction SilentlyContinue
+#Remove-Item -Path "$PSScriptRoot/terraform/bootstrap.tfvars" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$PSScriptRoot/terraform/bootstrap.plan" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$PSScriptRoot/terraform/.terraform*" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$PSScriptRoot/terraform/.terraform.*" -Force -ErrorAction SilentlyContinue
-#Remove-Item -Path "$PSScriptRoot/terraform/*.tfstate*" -Force -ErrorAction SilentlyContinue
 Write-Host ""
 if (!($Action -ne "Remove")) {
     Write-Host -ForegroundColor $WRN "NOTE: Manual approval may be required for pending API permissions assigned to the Service Principal."
 }
 Write-Host ""
-Write-Host -ForegroundColor $HD1 "===== COMPLETE ====="
+Write-Host -ForegroundColor $HD1 "===== BOOT STRAP SCRIPT COMPLETE ====="
 Write-Host ""
