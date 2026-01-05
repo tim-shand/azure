@@ -30,3 +30,8 @@ output "stacks" {
   description = "List of deployments stacks to configure."
   value       = [for env in values(github_repository_environment.gh_env) : env.environment]
 }
+
+output "service_principal_oidc" {
+  description = "List of OIDC federated credential display names."
+  value       = [for cred in values(azuread_application_federated_identity_credential.repo_env) : cred.display_name]
+}
