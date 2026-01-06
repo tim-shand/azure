@@ -3,7 +3,7 @@
 #=====================================================#
 
 locals {
-  policies = var.gov_policy_builtin
+  policies = var.policy_builtin
 }
 
 # Governance: Policy Assignments (Built-In) -----------------#
@@ -25,12 +25,12 @@ resource "azurerm_management_group_policy_assignment" "custom" {
   management_group_id  = azurerm_management_group.mg_root.id
   parameters = jsonencode({
     listOfAllowedLocations = {
-      value = var.gov_policy_allowed_locations
+      value = var.policy_allowed_locations
     }
   })
   lifecycle {
     precondition {
-      condition     = length(var.gov_policy_allowed_locations) >= 1
+      condition     = length(var.policy_allowed_locations) >= 1
       error_message = "At least one allowed location must be provided."
     }
   }
