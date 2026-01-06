@@ -319,22 +319,23 @@ else {
 if ($Action -eq "Remove") {
     # Migrate remote state back to local and remove backend file. 
     Write-Host -ForegroundColor $HD1 "[*] Pulling remote Terraform state from Azure... " -NoNewline
-    if (Test-Path -Path "$PSScriptRoot/terraform/backend.tf") {
-        terraform -chdir="$($tfDir)" state pull > "$($tf_state_key).bak" # Backup remote.
-        terraform -chdir="$($tfDir)" state pull > "terraform.tfstate" # Rename local copy. 
-        if (Test-Path -Path "$PSScriptRoot/terraform/$($tf_state_key).bak") {
+    if (Test-Path -Path "$tfDir/backend.tf") {
+        terraform -chdir="$($tfDir)" state pull > "$tfDir/$($tf_state_key).bak" # Backup remote.
+        terraform -chdir="$($tfDir)" state pull > "$tfDir/terraform.tfstate" # Rename local copy. 
+        if (Test-Path -Path "$tfDir/$($tf_state_key).bak") {
             Write-Host -ForegroundColor $INF "PASS"
-            Remove-Item -Path "$PSScriptRoot/terraform/backend.tf" -Force -ErrorAction SilentlyContinue
+            Remove-Item -Path "$tfDir/backend.tf" -Force -ErrorAction SilentlyContinue
+            # Re-initialise Terraform post state migration. 
+            terraform -chdir="$($tfDir)" -reconfigure
         }
         else {
-            Write-Host -ForegroundColor $ERR "FAIL"
-            Write-Host -ForegroundColor $ERR "[x] Failed to pull Terraform state back to local. Please check configuration and try again."
+            Write-Host -ForegroundColor $WRN "WARN"
+            Write-Host -ForegroundColor $WRN "[x] Failed to pull Terraform state back to local. Please check configuration."
         }
     }
     else {
-        Write-Host -ForegroundColor $ERR "FAIL"
-        Write-Host -ForegroundColor $ERR "[x] Backend configuration is missing. Unable to pull state from Azure."
-        exit 1
+        Write-Host -ForegroundColor $WRN "WARN"
+        Write-Host -ForegroundColor $WRN "[x] Backend configuration is missing. Defaulting to local."
     }
 
     # Check for local file (download from remote storage and place in Terraform directory).
@@ -346,6 +347,7 @@ if ($Action -eq "Remove") {
     else {
         Write-Host -ForegroundColor $ERR "FAIL"
         Write-Host -ForegroundColor $ERR "[x] Local state file is missing. Please download from remote storage and try again." 
+        exit 1
     }
 }
 else {
