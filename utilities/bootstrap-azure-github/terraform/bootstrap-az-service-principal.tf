@@ -37,28 +37,28 @@ resource "azuread_service_principal" "entra_iac_sp" {
 # Assign RBAC roles for SP at top-level tenant root group. 
 # NOTE: Required to deploy Management Group structure in Governance stack, and read/write to Key Vaults. 
 resource "azurerm_role_assignment" "rbac_sp_contrib" {
-  scope                = data.azurerm_management_group.mg_tenant_root.id # Tenant Root MG ID.
-  role_definition_name = "Contributor"
+  scope                = data.azurerm_management_group.mg_tenant_root.id  # Tenant Root MG ID.
+  role_definition_name = "Contributor"                                    # Required to deploy resources in tenant. 
   principal_id         = azuread_service_principal.entra_iac_sp.object_id # Service Principal ID.
 }
 resource "azurerm_role_assignment" "rbac_sp_uac" {
   scope                = data.azurerm_management_group.mg_tenant_root.id
-  role_definition_name = "User Access Administrator"
+  role_definition_name = "User Access Administrator" # Required to assign RBAC permissions to resources. 
   principal_id         = azuread_service_principal.entra_iac_sp.object_id
 }
 resource "azurerm_role_assignment" "rbac_sp_kva" {
   scope                = data.azurerm_management_group.mg_tenant_root.id
-  role_definition_name = "Key Vault Administrator"
+  role_definition_name = "Key Vault Administrator" # Required to update Key Vaults. 
   principal_id         = azuread_service_principal.entra_iac_sp.object_id
 }
 resource "azurerm_role_assignment" "rbac_sp_kvo" {
   scope                = data.azurerm_management_group.mg_tenant_root.id
-  role_definition_name = "Key Vault Secrets Officer"
+  role_definition_name = "Key Vault Secrets Officer" # Required to read generated Key Vault Secrets. 
   principal_id         = azuread_service_principal.entra_iac_sp.object_id
 }
 resource "azurerm_role_assignment" "rbac_sp_stc" {
   scope                = data.azurerm_management_group.mg_tenant_root.id
-  role_definition_name = "Storage Blob Data Contributor"
+  role_definition_name = "Storage Blob Data Contributor" # Required to update blob storage properties. 
   principal_id         = azuread_service_principal.entra_iac_sp.object_id
 }
 
