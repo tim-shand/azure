@@ -1,7 +1,11 @@
-# Governance: Management Groups -----------------#
+# Stack: Governance [Outputs] ----------------------------------#
 
-output "plz_governance_mg_root" {
+output "mg_root" {
   description = "Name ID of the top-level management group."
-  value       = module.plz_governance.plz_governance_mg_root.id
+  value       = module.plz-gov-management-groups.mg_root
 }
 
+output "mg_child" {
+  description = "List of Management Groups and subscription associations."
+  value       = module.plz-gov-management-groups.mg_child
+}

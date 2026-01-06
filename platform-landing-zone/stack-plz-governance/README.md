@@ -19,7 +19,7 @@ This stack deploys a light-weight, CAF-aligned governance layer for use with sma
 ### Subscription Naming Convention
 
 Subscription display names **MUST** use a uniform naming convention to enable the automatic assignment to Management Groups. 
-For example: `sub-mgt-azure`, where the `mgt` portion is defined in variable `gov_management_group_list` and associated to a parent amanagement group using the `subscription_identifier` value. 
+For example: `sub-mgt-azure`, where the `mgt` portion is defined in variable `management_group_list` and associated to a parent management group using the `subscription_identifier` value. 
 
 <!-- BEGIN_TF_DOCS -->
 ## Providers

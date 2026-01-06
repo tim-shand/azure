@@ -1,10 +1,15 @@
+# Governance: General -----------------#
+
+stack_code      = "gov" # Shor code used for resource naming. 
+subscription_id = "8cf80f38-0042-413a-a0ac-c65663dda28e"
+
 # Governance: Management Groups -----------------#
 
-gov_management_group_root = "Core" # Top level Management Group name.
-gov_management_group_list = {
+management_group_root = "Core" # Top level Management Group name.
+management_group_list = {
   platform = {
     display_name            = "Platform" # Cosmetic name for Management Group.
-    subscription_identifier = "mgt"      # Used to identify existing subscriptions to add to the Management Groups. 
+    subscription_identifier = "plz"      # Used to identify existing subscriptions to add to the Management Groups. 
   }
   workloads = {
     display_name            = "Workloads"
@@ -22,7 +27,7 @@ gov_management_group_list = {
 
 # Governance: Policy Assignments -----------------#
 
-gov_policy_allowed_locations = [
+policy_allowed_locations = [
   "australiaeast",
   "australiasoutheast",
   "nznorth",
@@ -30,7 +35,7 @@ gov_policy_allowed_locations = [
   "eastus"
 ]
 
-gov_policy_builtin = {
+policy_builtin = {
   CIS_Microsoft_Azure_Foundations_Benchmark = {
     id           = "/providers/Microsoft.Authorization/policySetDefinitions/06f19060-9e68-4070-92ca-f15cc126059e"
     display_name = "CIS-MSAzureFoundations"

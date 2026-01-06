@@ -1,23 +1,27 @@
 terraform {
-  required_version = "~> 1.14.0"
+  required_version = ">= 1.14.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.40.0"
+      version = "~> 4.57.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 3.5.0"
+      version = "~> 3.7.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.7.2"
     }
   }
-  backend "azurerm" {} # Use dynamic backend supplied in GHA workflow, AFTER bootstrap process.
+  #backend "azurerm" {} # Use backend supplied by workflow. 
 }
-
 provider "azurerm" {
   features {}
-  tenant_id       = data.azuread_client_config.current.tenant_id # Get tenant from current session.
-  subscription_id = var.subscription_id                          # Target subscription for resources. 
+  tenant_id           = data.azuread_client_config.current.tenant_id # Get from current session. 
+  subscription_id     = var.subscription_id                          # Provided by workflow variable. 
+  storage_use_azuread = true                                         # Use Entra ID only for interacting with Storage services. 
 }
 
 data "azuread_client_config" "current" {} # Get current user session data.
-data "azurerm_subscription" "current" {}  # Get current Azure CLI subscription.
+data "azurerm_subscription" "current" {}  # Get current Azure subscription.
