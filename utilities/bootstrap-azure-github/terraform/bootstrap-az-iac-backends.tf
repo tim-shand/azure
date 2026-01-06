@@ -64,5 +64,5 @@ resource "azurerm_role_assignment" "rbac_ga_rg" {
   for_each             = local.resource_stack_mapping
   scope                = azurerm_resource_group.iac_rg[each.key].id
   role_definition_name = "Storage Blob Data Contributor" # Required to access and update blob storage properties. 
-  principal_id         = azuread_client_config.current.object_id
+  principal_id         = data.azuread_client_config.current.object_id
 }
