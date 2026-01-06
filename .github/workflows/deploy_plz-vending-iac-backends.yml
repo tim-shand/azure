@@ -12,14 +12,14 @@ on:
                     - "Plan"
                     - "Apply"
                     - "Destroy"
-    pull_request: # Pull Request
-        paths:
-            - "env/vending-iac-backend.tfvars" # Changes to the TFVARS file.
-            - "platform-landing-zone/stack-vending-iac-backends/**" # Changes to the stack root module.
-            - "modules/vending-iac-backend/**" # Changes to the module.
-            - ".github/workflows/deploy_vending-iac-backends.yml" # Changes to the workflow itself.
-        branches:
-            - main # Trigger on pull request to main branch.
+    # pull_request: # Pull Request
+    #     paths:
+    #         - "env/vending-iac-backend.tfvars" # Changes to the TFVARS file.
+    #         - "platform-landing-zone/stack-vending-iac-backends/**" # Changes to the stack root module.
+    #         - "modules/vending-iac-backend/**" # Changes to the module.
+    #         - ".github/workflows/deploy_vending-iac-backends.yml" # Changes to the workflow itself.
+    #     branches:
+    #         - main # Trigger on pull request to main branch.
 
 permissions:
     id-token: write # Required for OIDC auth
