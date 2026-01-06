@@ -32,19 +32,55 @@ This bootstrap deployment will create resources in both Azure and GitHub, requir
   - Dedicated, privileged identity for executing changes in the Azure tenant. 
   - Uses federated credentials (OIDC) for authentication with GitHub Actions workflows. 
 - **GitHub: Repository Environment, Secrets and Variables**
+  - Creates repository environments per deployment stack. 
   - Adds Entra ID service principal details to repository secrets. 
-  - Adds Azure resources used for remote backend storage to GitHub Actions variables per stack environment. 
+  - Adds Azure resources used for remote backend per deployment stack environment. 
 - **Azure: Remote Backend Resources**
   - Uses dedicated Azure subscription to contain remote states for all IaC projects. 
   - **Resource Group:** Logical container for deployment categories (platform, bootstrap, workloads). 
   - **Storage Account:** Holds all storage containers in one account per deployment category (platform, bootstrap, workloads). 
-  - **Containers:** Logical grouping of remote states per deployment stack (plz-governance, plz-management etc). 
+  - **Containers:** Logical grouping of remote states per deployment stack (plz-governance, plz-management, etc). 
+
+### Example Structure
+
+```text
+org-iac-bootstrap-rg
+└── orgiacbootstrapsa12345
+    └── tfstate-iac-bootstrap
+
+org-iac-platform-rg
+└── orgiacplatformsa12345
+    ├── tfstate-plz-governance
+    ├── tfstate-plz-connectivity
+    ├── tfstate-plz-management
+    └── tfstate-plz-identity
+
+org-iac-workloads-rg
+└── orgiacworkloadssa12345
+```
+
+| Object                  | Created per  | Example                  |
+| ----------------------- | ------------ | ------------------------ |
+| Resource Group          | **Category** | org-plz-bootstrap-rg     |
+| Resource Group          | **Category** | org-plz-platform-rg      |
+| Resource Group          | **Category** | org-plz-workloads-rg     |
+| Storage Account         | **Category** | orgplzbootstrapsa12345   |
+| Storage Account         | **Category** | orgplzplatformsa12345    |
+| Storage Account         | **Category** | orgplzworkloadssa12345   |
+| Blob Container          | **Stack**    | tfstate-plz-governance   |
+| Blob Container          | **Stack**    | tfstate-plz-connectivity |
+| Blob Container          | **Stack**    | tfstate-plz-management   |
+| Blob Container          | **Stack**    | tfstate-plz-identity     |
+| Repository Environment  | **Stack**    | plz-governance           |
+| Repository Environment  | **Stack**    | plz-connectivity         |
+| Repository Environment  | **Stack**    | plz-management           |
+| Repository Environment  | **Stack**    | plz-identity             |
 
 ---
 
 ## :arrow_forward: Usage
 
-### Create
+### ➕ Create
 
 1. Copy/rename Powershell data file `env-example.psd1`.
 2. Populate with required variable values.
@@ -58,7 +94,7 @@ powershell -file utilities/bootstrap-azure-github/bootstrap-azure-github.ps1 -En
 4. Verify all resources have been deployed in Azure and GitHub.
 5. \[Optional\]: Migrate local state file to Azure when prompted.
 
-### Remove
+### ➖ Remove
 
 1. Download the remote state file from Azure and place in `utilities/bootstrap-azure-github/terraform` directory. 
 2. Execute Powershell script using the `-Action Remove` parameter. 
