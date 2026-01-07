@@ -2,18 +2,15 @@
 # This file contains only non-sensitive configuration data (no credentials or secrets).
 # All secrets are stored securely in Github Secrets or environment variables.
 
-# General
-location = "newzealandnorth"
-naming = {
-  org         = "tjs"      # Short name of organization (abc).
-  service     = "plz"      # Service name used in the project (iac, mgt, sec).
-  project     = "platform" # Project name for related resources (platform, landingzone).
-  environment = "prd"
+global = {
+  location = "newzealandnorth" # Default preferred location for IaC backend resources. 
 }
-
-# Tags (assigned to all bootstrap resources).
+naming = {
+  prefix  = "tjs" # Short name of organization ("abc"). Used in resource naming.
+  project = "plz" # Project name for related resources (plz, platform, webapp01). 
+}
 tags = {
-  Project     = "PlatformLandingZone" # Name of the project the resources are for.
-  Owner       = "CloudOps"            # Team responsible for the resources.
-  Environment = "prd"
+  Project = "PlatformLandingZone" # Name of the project. 
+  Owner   = "CloudOps"            # Team responsible for the resources. 
+  Creator = "Bootstrap"           # Person or process that created the initial resources. 
 }
