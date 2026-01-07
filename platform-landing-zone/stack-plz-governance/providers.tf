@@ -14,7 +14,7 @@ terraform {
       version = "~> 3.7.2"
     }
   }
-  backend "azurerm" {} # Use backend supplied by workflow. 
+  backend "azurerm" {} # Use backend supplied during workflow. 
 }
 provider "azurerm" {
   features {}
