@@ -49,6 +49,7 @@ jobs: # List jobs to execute.
             ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }} # Azure: Tenant ID [Repo Secret]
             ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }} # Azure: Service Principal ID [Repo Secret]
             ARM_SUBSCRIPTION_ID_IAC: ${{ secrets.ARM_SUBSCRIPTION_ID_IAC }} # Azure: Subscription for all IaC Backends [Repo Secret].
+            ARM_SUBSCRIPTION_ID: ${{ vars.ARM_SUBSCRIPTION_ID }} # Azure: Subscription for target deployment [Env Variable].
 
             # Determine which steps should run (based on input and pull request triggers).
             RUN_PLAN: ${{ github.event_name == 'pull_request' || github.event.inputs.action == 'Plan' || github.event.inputs.action == 'Apply' }}
