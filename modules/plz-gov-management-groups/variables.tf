@@ -11,7 +11,7 @@ variable "management_group_root" {
   type        = string
   validation {
     condition     = can(regex("^[a-zA-Z0-9-]+$", var.management_group_root)) # Only allow alpha-numeric with dashes.
-    error_message = "Only contain letters, numbers, and dashes (-) are allowed. No spaces or other symbols."
+    error_message = "Only letters, numbers, and dashes (-) are allowed. No spaces or other symbols."
   }
 }
 
