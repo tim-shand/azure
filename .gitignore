@@ -37,6 +37,7 @@ tfplan.*
 crash.log
 crash.*.log
 backend.conf
+backend.tf
 **/*bootstrap*/**/backend.tf
 bootstrap.tfvars
 # Allow example or default TFVARS file.
