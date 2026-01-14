@@ -1,0 +1,16 @@
+{
+    "properties": {
+        "displayName": "Deny All Resources for Decommissioned Subscriptions",
+        "description": "This policy denies the creation or modification of all resource types in the assigned scope.",
+        "mode": "Indexed",
+        "policyRule": {
+            "if": {
+                "field": "type",
+                "like": "Microsoft.*/*"
+            },
+            "then": {
+                "effect": "Deny"
+            }
+        }
+    }
+}
