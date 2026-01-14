@@ -3,7 +3,7 @@ output "mg_root" {
   value       = azurerm_management_group.mg_root
 }
 
-output "mg_child" {
-  description = "List of Management Groups and subscription associations."
-  value       = azurerm_management_group.mg_child #local.mg_subscription_ids
+output "mg_child_keys" {
+  description = "Management Group keys"
+  value       = keys(azurerm_management_group.mg_child)
 }

@@ -19,8 +19,14 @@ variable "policy_custom_def_path" {
   default     = "./policy_definitions"
 }
 
-variable "filter_string" {
-  description = "String value to filter JSON file on. Used to determine scope (core vs workload)."
+variable "management_group_root" {
+  description = "Root management group object."
   type        = string
+  nullable    = false
+}
+
+variable "management_group_keys" {
+  description = "String value to filter JSON file on. Used to determine MG scope (core vs workload)."
+  type        = list(string)
   nullable    = false
 }
