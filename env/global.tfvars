@@ -13,5 +13,5 @@ tags = {
   Project     = "PlatformLandingZone" # Name of the project. 
   Owner       = "CloudOps"            # Team responsible for the resources. 
   Creator     = "Bootstrap"           # Person or process that created the initial resources. 
-  Environment = "Shared Services"
+  Environment = "Shared Services"     # Environment: Shared Services, prd, dev, tst
 }
