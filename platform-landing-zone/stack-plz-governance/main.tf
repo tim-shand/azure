@@ -1,9 +1,14 @@
 # Stack: Governance [Main] ----------------------------------#
 
+locals {
+  prefix            = "${var.naming.prefix}-${var.naming.project}-${var.stack_code}" # Pre-configure resource naming. 
+  plz_log_analytics = "${prefix}-law"                                                # Name of shared Log Analystics Workspace for central logging. 
+}
+
 # Governance: Management Groups
 module "plz-gov-management-groups" {
   source                = "../../modules/plz-gov-management-groups"
-  naming                = var.naming
+  naming                = var.naming                # Global naming methods. 
   management_group_root = var.management_group_root # Top level management group name (parent). 
   management_group_list = var.management_group_list # List of management groups and subscriptions to associate. 
 }

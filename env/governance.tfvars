@@ -1,6 +1,7 @@
-# Governance: General -----------------#
+# General -----------------#
 
 subscription_id = "8cf80f38-0042-413a-a0ac-c65663dda28e" # TEMP
+stack_name      = "Governance"                           # Full stack name. Used with tag assignment and naming. 
 stack_code      = "gov"                                  # Short code used for resource naming. 
 
 # Governance: Management Groups -----------------#
