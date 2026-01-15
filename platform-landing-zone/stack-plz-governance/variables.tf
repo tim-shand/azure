@@ -63,7 +63,7 @@ variable "management_group_list" {
 # Governance: Policy Parameters -----------------#
 
 variable "policy_builtin_initiatives" {
-  description = "Set of display name for built-in policy initiatives to assign."
+  description = "Set of display name for built-in policy initiatives to assign at root management group."
   type        = set(string)
   default     = []
   nullable    = true
