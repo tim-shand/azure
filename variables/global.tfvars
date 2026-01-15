@@ -3,8 +3,8 @@
 # All secrets are stored securely in Github Secrets or environment variables.
 
 global = {
-  location                = "newzealandnorth" # Default preferred location for IaC backend resources. 
-  log_analytics_workspace = "tjs-plz-mgt-law" # Pre-determined name for Log Analytics Workspace. Referenced by Governance stack, used by Management Stack. 
+  location = "newzealandnorth" # Default preferred location for IaC backend resources. 
+  #log_analytics_workspace = "tjs-plz-mgt-law" # Pre-determined name for Log Analytics Workspace. Referenced by Governance stack, used by Management Stack. 
 }
 naming = {
   prefix  = "tjs" # Short name of organization ("abc"). Used in resource naming.
@@ -13,6 +13,6 @@ naming = {
 tags = {
   Project     = "PlatformLandingZone" # Name of the project. 
   Owner       = "CloudOps"            # Team responsible for the resources. 
-  Creator     = "Terraform"           # Person or process that created the initial resources. 
+  Creator     = "IaC-Terraform"       # Person or process that created the initial resources. 
   Environment = "Shared Services"     # Environment: Shared Services, prd, dev, tst
 }
