@@ -234,7 +234,8 @@ global = {
   }
   naming = {  # Naming Convention - Example: "abc-plz-gov-logs-law"
     org_prefix  = "$($config.global.naming.org_prefix)"      # Short name of organization ("abc"). Used in resource naming.
-    project     = "$($config.global.naming.project)" # Project name for related resources (plz, platform, webapp01). 
+    project_long  = "$($config.global.naming.project_long)"  # Project name (long) for related resources (platform, webapp01). 
+    project_short = "$($config.global.naming.project_short)" # Project name (short) for related resources (plz, app).
     environment = "$($config.global.naming.environment)" # PLZ = Platform Landing Zone
   }
   tags = {
@@ -455,10 +456,9 @@ terraform {
 #================================================#
 # MAIN: Stage 6 - Clean Up
 #================================================#
-#Remove-Item -Path "$PSScriptRoot/terraform/bootstrap.tfvars" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$tf_dir/bootstrap.plan" -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "$tf_dir.terraform*" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "$tf_dir.terraform.*" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$tf_dir/terraform*" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$tf_dir/terraform.*" -Force -ErrorAction SilentlyContinue
 Write-Host ""
 if ($Action -ne "Remove") {
     Write-Host -ForegroundColor $WRN "NOTE: Manual approval may be required for pending API permissions assigned to the Service Principal."

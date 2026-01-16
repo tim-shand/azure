@@ -9,7 +9,8 @@
         }
         naming = @{                 # Naming Convention - Example: "abc-plz-gov-logs-law"
             org_prefix  = "abc"      # Short name of organization ("abc"). Used in resource naming.
-            project     = "platform" # Project name for related resources (plz, platform, webapp01). 
+            project_long  = "platform"  # Project name (long) for related resources (platform, webapp01). 
+            project_short = "plz"       # Project name (short) for related resources (plz, app).
             environment = "plz"
         }
         tags = @{
