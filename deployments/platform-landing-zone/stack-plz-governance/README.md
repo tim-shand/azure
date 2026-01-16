@@ -11,7 +11,7 @@ This stack deploys a light-weight, CAF-aligned governance layer. This stack prov
 
 ## Process
 
-- Deploy management group hierarchy. 
+- Deploy management group hierarchy and assign subscriptions using subscription ID prefixes. 
 - Deploy policy definitions & initiatives. 
 - Deploy policy assignments. 
 
