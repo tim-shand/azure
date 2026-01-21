@@ -1,6 +1,6 @@
 formatter: "markdown" # this is required
-header-from: "_header.md"
-footer-from: "_footer.md"
+#header-from: "_header.md"
+#footer-from: "_footer.md"
 
 recursive:
   enabled: false
