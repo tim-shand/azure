@@ -55,7 +55,7 @@ resource "azurerm_management_group" "root" {
 resource "azurerm_management_group" "level1" {
   for_each                   = local.management_groups_subs_level1
   name                       = lower("${var.global.naming.org_code}-${each.key}-mg") # Force lower-case for resource name. 
-  display_name               = title(each.value.display_name)                        # Use map key for MG dislpay name. 
+  display_name               = title(each.value.display_name)                        # Use map key for MG display name. 
   parent_management_group_id = azurerm_management_group.root.id                      # Nested under root management group. 
   subscription_ids           = each.value.subscriptions                              # Assign mapped subscriptions. 
 }
