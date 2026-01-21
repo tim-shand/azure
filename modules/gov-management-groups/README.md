@@ -59,3 +59,6 @@ module "management-groups" {
   management_groups_level4 = {} # Level 4: Nested under level 3 MGs. Leave blank "{}" if not required. 
 }
 ```
+
+<!-- BEGIN_TF_DOCS -->
+<!-- END_TF_DOCS -->
