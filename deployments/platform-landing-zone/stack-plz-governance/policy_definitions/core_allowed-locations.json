@@ -1,0 +1,56 @@
+{
+    "properties": {
+        "displayName": "Allowed Locations",
+        "description": "This policy enables you to restrict the locations your organization can specify when deploying resources. Use to enforce your geo-compliance requirements. Excludes resource groups, Microsoft.AzureActiveDirectory/b2cDirectories, and resources that use the 'global' region.",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "metadata": {
+            "category": "Governance"
+        },
+        "parameters": {
+            "listOfAllowedLocations": {
+                "type": "Array",
+                "metadata": {
+                    "description": "The list of locations that can be specified when deploying resources.",
+                    "strongType": "location",
+                    "displayName": "Allowed Locations"
+                }
+            },
+            "effect": {
+                "type": "String",
+                "defaultValue": "Audit",
+                "allowedValues": [
+                    "Audit",
+                    "Deny",
+                    "Disabled"
+                ],
+                "metadata": {
+                    "description": "Effect defines what happens if policy conditions are met.",
+                    "strongType": "effect",
+                    "displayName": "Effect"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "location",
+                        "notIn": "[parameters('listOfAllowedLocations')]"
+                    },
+                    {
+                        "field": "location",
+                        "notEquals": "global"
+                    },
+                    {
+                        "field": "type",
+                        "notEquals": "Microsoft.AzureActiveDirectory/b2cDirectories"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]"
+            }
+        }
+    }
+}
