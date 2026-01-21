@@ -6,7 +6,7 @@ data "azurerm_subscriptions" "all" {} # Get all subscriptions visible to current
 
 # Naming: Generate uniform, consistent name outputs to be used with resources. 
 module "naming" {
-  source     = "../../modules/global-resource-naming"
+  source     = "../../modules/global-naming"
   org_prefix = var.global.naming.org_prefix
   project    = var.global.naming.project_short
   category1  = var.naming.stack_code
