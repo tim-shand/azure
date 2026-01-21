@@ -4,26 +4,26 @@ output "management_group_root_id" {
 }
 
 output "management_groups_subs_level1" {
-  value = local.management_groups_subs_level1
+  value = azurerm_management_group.level1
 }
 
 output "management_groups_subs_level2" {
-  value = local.management_groups_subs_level2
+  value = azurerm_management_group.level2
 }
 
 output "management_groups_subs_level3" {
-  value = local.management_groups_subs_level3
+  value = azurerm_management_group.level3
 }
 
 output "management_groups_subs_level4" {
-  value = local.management_groups_subs_level4
+  value = azurerm_management_group.level4
 }
 
 output "management_group_subscriptions" {
   value = merge(
-    local.management_groups_subs_level1,
-    local.management_groups_subs_level2,
-    local.management_groups_subs_level3,
-    local.management_groups_subs_level4
+    azurerm_management_group.level1,
+    azurerm_management_group.level2,
+    azurerm_management_group.level3,
+    azurerm_management_group.level4
   )
 }

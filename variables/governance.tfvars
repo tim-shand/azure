@@ -45,26 +45,7 @@ management_groups_level2 = {
 management_groups_level3 = {} # Leave blank if not required. 
 management_groups_level4 = {} # Leave blank if not required.
 
-# # Governance: Policy Configuration
-# policy_log_analytics_id            = ""                  # ID of the shared services Log Analytics Workspace. 
+# # Policy: Built-In 
 # policy_initiatives_builtin         = ["New Zealand ISM"] # List of built-in Policy Initiatives to assign at top level. 
 # policy_initiatives_builtin_enable  = true                # Enable policy assignment (turns it on/off). 
 # policy_initiatives_builtin_enforce = false               # Enforce policy controls (audit vs enforce). 
-
-# policy_custom_allowed_locations = {
-#   effect = "Audit" # Audit, Deny, Disabled
-#   locations = [
-#     "australiaeast",
-#     "australiasoutheast",
-#     "newzealandnorth",
-#     "westus2"
-#   ]
-# }
-# policy_custom_required_tags = {
-#   effect = "Audit" # Audit, Deny, Disabled
-#   tags = [
-#     "Owner",
-#     "Environment",
-#     "Project"
-#   ]
-# }

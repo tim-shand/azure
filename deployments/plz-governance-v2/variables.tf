@@ -4,6 +4,13 @@ variable "global" {
   type        = map(map(string))
 }
 
+variable "naming" {
+  description = "Map of deployment naming parameters to use with resources."
+  type        = map(string)
+  nullable    = false
+  default     = {}
+}
+
 variable "subscription_id" {
   description = "Subscription ID for the target changes. Provided by workflow variable or terminal input."
   type        = string
