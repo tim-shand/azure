@@ -4,6 +4,11 @@ variable "global" {
   type        = map(map(string))
 }
 
+variable "naming_prefix" {
+  description = "String value used for resource naming."
+  type        = string
+}
+
 # Subscriptions ----------------------------------------------------------|
 variable "subscriptions" {
   description = "List of all subscriptions available in tenant."
