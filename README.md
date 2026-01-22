@@ -22,15 +22,15 @@ Deployed and managed using infrastructure as Code (IaC), providing shared resour
   - Deploys backend resources into dedicated IaC subscription **per stack**:
     - Maintaining isolation and independence per stack.  
     - Resource Groups and Storage Accounts per category (bootstrap, platform, workloads).
-    - One state file per stack (governance, connectivity, management, identity). 
+    - One state file per stack (governance, connectivity, management, identity).
+- **[Governance](./deployments/plz-governance)**
+  - Management groups for policy assignment hierarchy and subscription management. 
+  - Automated mapping of subscriptions to target management groups using an identifier value. 
+  - RBAC and policy assignments providing guard rails to secure the environment and reduce unwanted spend.  
 - **[Management](./deployments/plz-management)**
   - Centralized Log Analytics workspace for monitoring and observability. 
   - Diagnostic settings (applied via policy). 
   - Microsoft Defender for Cloud (Foundational CSPM) providing security posture and recommendations. 
-- **[Governance](./deployments/plz-governance)**
-  - Management groups for policy assignment hierarchy and subscription management. 
-  - Automated mapping of subscriptions to target management groups using an identifier value. 
-  - RBAC and policy assignments providing guard rails to secure the environment and reduce unwanted spend. 
 - **[Connectivity](./deployments/plz-connectivity)**
   - Hub-Spoke architecture, providing centralized network management and flow control. 
   - Workload VNets peered as spokes, isolating and securing environments. 
