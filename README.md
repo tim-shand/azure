@@ -2,8 +2,8 @@
 
 _Automated, IaC-driven Azure platform landing zone, implementing governance, automation, and targeting operational best practices._
 
-This repository contains my personal Azure tenant, providing an enterprise-style environment for hands-on skill development. 
-The project features a platform landing zone, providing centralized shared services for workloads deployed within the tenant. 
+This repository contains a custom Azure platform landing zone (PLZ), providing an enterprise-style environment for hands-on skill development. 
+The platform landing zone deploys shared services, providing governance via Azure Policy, and centralized connectivty through a hub-spoke network architecture.  
 
 Designed to be light-weight and cost efficient, utilizing free or low-cost options where possible, while maintaining a minimalistic footprint. 
 
@@ -11,7 +11,7 @@ Designed to be light-weight and cost efficient, utilizing free or low-cost optio
 
 ## 🚀 Platform Landing Zone
 
-Deployed and managed using infrastructure as Code (IaC), providing shared resources, connectivity, governance, monitoring and observability, with an aim to align with CAF guidelines and best practices where possible. 
+Deployed and managed using infrastructure as Code (IaC), providing shared resources, connectivity, governance, monitoring and observability, with an aim to align with CAF guidelines and best practices where practical. 
 
 - **[Bootstrapping (Powershell + Terraform)](./deployments/bootstrap)** 
   - Provides the initial setup process to configure Azure and GitHub for automation and IaC. 
@@ -23,18 +23,18 @@ Deployed and managed using infrastructure as Code (IaC), providing shared resour
     - Maintaining isolation and independence per stack.  
     - Resource Groups and Storage Accounts per category (bootstrap, platform, workloads).
     - One state file per stack (governance, connectivity, management, identity). 
-- **[Management](./deployments/platform-landing-zone/stack-plz-management)**
+- **[Management](./deployments/plz-management)**
   - Centralized Log Analytics workspace for monitoring and observability. 
   - Diagnostic settings (applied via policy). 
   - Microsoft Defender for Cloud (Foundational CSPM) providing security posture and recommendations. 
-- **[Governance](./deployments/platform-landing-zone/stack-plz-governance)**
+- **[Governance](./deployments/plz-governance)**
   - Management groups for policy assignment hierarchy and subscription management. 
   - Automated mapping of subscriptions to target management groups using an identifier value. 
   - RBAC and policy assignments providing guard rails to secure the environment and reduce unwanted spend. 
-- **[Connectivity](./deployments/platform-landing-zone/stack-plz-connectivity)**
+- **[Connectivity](./deployments/plz-connectivity)**
   - Hub-Spoke architecture, providing centralized network management and flow control. 
   - Workload VNets peered as spokes, isolating and securing environments. 
-- **[Identity](./deployments/platform-landing-zone/stack-plz-identity)**
+- **[Identity](./deployments/plz-identity)**
   - Create base groups within Entra ID for RBAC assignments. 
   - Automate the creation and management of groups, users, and PIM role assignments. 
 
@@ -67,6 +67,6 @@ Deployed and managed using infrastructure as Code (IaC), providing shared resour
 ## 📝 To Do / Future Improvements
 
 - [ ] PLZ: Governance - Policy Assignments (revisit)
-- [ ] Workload Backend Vending (re-visit)
+- [ ] Workload Backend Vending (revisit)
 - [ ] Subscription Vending
 - [ ] Optional on-prem connectivity (VPN Gateway)
