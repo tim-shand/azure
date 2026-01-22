@@ -1,4 +1,4 @@
-# Ignore
+# General
 .notes/
 .notes.md
 .token
@@ -13,7 +13,7 @@
 .env
 *.env
 *.env.ps1
-*env.psd1
+*.psd1
 .venv
 env/
 venv/
@@ -49,6 +49,4 @@ override.tf.json
 # Allow example or default TFVARS file.
 !example.tfvars
 !terraform.tfvars
-!env-dev.tfvars
-!env-prd.tfvars
-!env-example.psd1
+!*-example.psd1
