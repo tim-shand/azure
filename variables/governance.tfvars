@@ -1,5 +1,4 @@
 # General 
-subscription_id = "8cf80f38-0042-413a-a0ac-c65663dda28e"
 naming = {
   stack_name = "Governance" # Full stack name. Used with tag assignment and naming. 
   stack_code = "gov"        # Short code used for resource naming. 
@@ -62,18 +61,21 @@ policy_initiatives_builtin_enforce = false               # Enforce policy contro
 policy_allowed_locations = ["newzealandnorth", "australiaeast", "westus", "westus2"]
 policy_required_tags     = ["Owner", "Environment", "Project"]
 policy_allowed_vm_skus = [
-  "Standard_A1",
-  "Standard_A2",
-  "Standard_A3",
   "Standard_A1_v2",
   "Standard_A2_v2",
   "Standard_A4_v2",
+  "Standard_B1ls",
   "Standard_B1s",
+  "Standard_B1ms",
   "Standard_B2s",
-  "Standard_B2s_v2",
+  "Standard_B2ms",
+  "Standard_B4s",
+  "Standard_B4ms",
   "Standard_B4s_v2",
-  "Standard_D2_v3",
-  "Standard_D4_v3"
+  "Standard_D2_v4",
+  "Standard_D2s_v4",
+  "Standard_D4_v4",
+  "Standard_D4s_v4"
 ]
 policy_initiatives = { # Define Initiative -> Definition mapping. 
   core_baseline = [
