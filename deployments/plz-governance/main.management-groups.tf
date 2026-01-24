@@ -2,8 +2,6 @@
 # Platform LZ: Governance - Management Groups
 #=====================================================#
 
-data "azurerm_subscriptions" "all" {} # Get all subscriptions visible to current identity. 
-
 # Naming: Generate uniform, consistent name outputs to be used with resources. 
 module "naming_management_groups" {
   source   = "../../modules/global-naming"
