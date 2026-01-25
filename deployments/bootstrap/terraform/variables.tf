@@ -23,6 +23,13 @@ variable "tags" {
   default     = {}
 }
 
+variable "shared_services" {
+  description = "Map of Key Vault secret names where shared service names/IDs are stored."
+  type        = map(string)
+  nullable    = false
+  default     = {}
+}
+
 variable "deployment_stacks" {
   description = "Map of objects listing the deployment stack (category: Platform, stacks: ...)"
   type = map(object({

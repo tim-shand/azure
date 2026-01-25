@@ -18,6 +18,13 @@ variable "tags" {
   default     = {}
 }
 
+variable "shared_services" {
+  description = "Map of Key Vault secret names where shared service names/IDs are stored."
+  type        = map(string)
+  nullable    = false
+  default     = {}
+}
+
 variable "subscription_id" {
   description = "Subscription ID for the target changes. Provided by workflow variable or terminal input."
   type        = string

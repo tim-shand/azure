@@ -2,7 +2,7 @@
 # Bootstrap: Azure - Global Outputs
 #=================================================================#
 
-# Used to contain resource IDs, names, and other data required by other stacks/deployments. 
+# Write values to the Global Outputs Key Vault for shared access. 
 
 # Globals: Resource Group
 resource "azurerm_resource_group" "globals" {
@@ -26,7 +26,7 @@ resource "azurerm_key_vault" "globals" {
 
 # Global Outputs: Stored in Key Vault
 resource "azurerm_key_vault_secret" "iac_sp_id" {
-  name         = "ServicePrincipal-IaC-Deploy"
+  name         = var.shared_services.iac_service_principal # Name of the Key Vault secret containing the workflow Service Principal name. 
   value        = azuread_service_principal.entra_iac_sp.display_name
   key_vault_id = azurerm_key_vault.globals.id
   depends_on   = [azurerm_role_assignment.rbac_sp_kvs] # Requires RBAC to be in place before adding secret to KV. 
