@@ -11,6 +11,13 @@ variable "naming" {
   default     = {}
 }
 
+variable "shared_services" {
+  description = "Map of Key Vault secret names where shared service names/IDs are stored."
+  type        = map(string)
+  nullable    = false
+  default     = {}
+}
+
 variable "subscription_id" {
   description = "Subscription ID for the target changes. Provided by workflow variable or terminal input."
   type        = string
@@ -20,16 +27,15 @@ variable "subscription_id" {
   }
 }
 
-# Management Groups ----------------------------------------------------------|
-# variable "management_group_root" {
-#   description = "Name ID to use for the top-level (root) Management Group."
-#   type        = string
-#   validation {
-#     condition     = can(regex("^[a-zA-Z0-9-]+$", var.management_group_root)) # Only allow alpha-numeric with dashes.
-#     error_message = "Must be a string of alpha-numeric characters (can contain dashes), between 3 and 36 in length."
-#   }
-# }
+variable "global_outputs_kv" {
+  description = "Object of details for global outputs Key Vault. Passed in via command line or workflow."
+  type = object({
+    name           = string
+    resource_group = string
+  })
+}
 
+# Management Groups ----------------------------------------------------------|
 variable "management_group_root" {
   description = "Map of root level Management Group details."
   type = map(object({

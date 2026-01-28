@@ -2,8 +2,6 @@
 # Platform LZ: Governance - Management Groups
 #=====================================================#
 
-data "azurerm_subscriptions" "all" {} # Get all subscriptions visible to current identity. 
-
 # Naming: Generate uniform, consistent name outputs to be used with resources. 
 module "naming_management_groups" {
   source   = "../../modules/global-naming"
@@ -22,4 +20,11 @@ module "management_groups" {
   management_groups_level3 = var.management_groups_level3                 # Level 3: Nested under level 2 MGs. Leave blank "{}" if not required. 
   management_groups_level4 = var.management_groups_level4                 # Level 4: Nested under level 3 MGs. Leave blank "{}" if not required. 
   management_groups_level5 = var.management_groups_level5                 # Level 4: Nested under level 3 MGs. Leave blank "{}" if not required. 
+}
+
+# Global Outputs: Stored in Key Vault
+resource "azurerm_key_vault_secret" "iac_mg_root" {
+  name         = "ServicePrincipal-IaC-Deploy"
+  value        = module.management_groups.root_id
+  key_vault_id = data.azurerm_key_vault.globals_kv
 }

@@ -21,4 +21,10 @@ global = {
     repo   = "{global_repo_config_repo}"   # Repository where this project is stored. 
     branch = "{global_repo_config_branch}" # Name of the default repository branch. 
   }
+  shared_services_reference = {
+    iac_service_principal       = "iac-sp-deploy"         # Name of the Key Vault secret containing the workflow Service Principal name.
+    gov_managed_identity        = "gov-uai-policy-deploy" # Name of the Key Vault secret containing the Managed Identity name. 
+    gov_log_analytics_workspace = "gov-policy-law"        # Name of the Key Vault secret containing the central Log Analytics Workspace. 
+    con_hub_vnet                = "con-hub-vnet"          # Name of the Key Vault secret containing the hub VNet in the connectivity stack. 
+  }
 }
