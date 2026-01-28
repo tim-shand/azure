@@ -1,17 +1,16 @@
-# Azure: Platform Landing Zone
+# 🚀 Azure Platform Landing Zone
 
 _Automated, IaC-driven Azure platform landing zone, implementing governance, automation, and targeting operational best practices._
 
-This repository contains a custom Azure platform landing zone (PLZ), providing an environment __based__ on enterprise-scale architecture and CAF guidelines.  
-The platform landing zone deploys shared services, providing governance via Azure Policy, and centralized connectivty through a hub-spoke network architecture.  
+This repository contains a **custom** Azure platform landing zone (PLZ), providing an environment _based_ on enterprise-scale architecture and CAF guidelines.  
 
 Designed to be light-weight and cost efficient, utilizing free or low-cost options where possible, while maintaining a minimalistic footprint. 
 
 ---
 
-## 🚀 Overview
+## 🌟 Overview
 
-Deployed and managed using infrastructure as Code (IaC), providing shared resources, connectivity, governance, monitoring and observability, with an aim to align with CAF guidelines and best practices where practical. 
+Deployed and managed using infrastructure as Code (IaC), this platform landing zone is deployed in stages **(stacks)**, providing governance through Azure Policy, configuring shared services for monitoring and observability, and centralized connectivty through a hub-spoke network architecture. 
 
 - **[Bootstrapping (Powershell + Terraform)](./bootstrap)** 
   - Provides the initial setup process to configure Azure and GitHub for automation and IaC. 
@@ -38,7 +37,7 @@ Deployed and managed using infrastructure as Code (IaC), providing shared resour
   - Create base groups within Entra ID to be used with RBAC assignments. 
   - User-Assigned Managed Identity used to deploy policy configurations such as diagnostic settings to resources. 
 
-## Architecture & Design
+## 🏢 Architecture & Design
 
 TBC
 
@@ -68,7 +67,7 @@ TBC
 
 ---
 
-## Naming Conventions
+## 📕 Naming Conventions
 
 This project uses an opinionated naming format for resources to ensure consistency, readability, and CAF alignment. 
 
@@ -125,3 +124,12 @@ This project uses an opinionated naming format for resources to ensure consisten
 | api          | API / Function        |
 
 ---
+
+## ➕ To Do / Future Updates
+
+- [ ] Utility: PowerShell script for bootstrap process
+- [ ] Docs: Platform architecture diagram
+- [ ] Stack: Governance
+- [ ] Stack: Management
+- [ ] Stack: Connectivity
+- [ ] Stack: Identity
