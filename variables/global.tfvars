@@ -21,10 +21,10 @@ global = {
     repo   = "azure-platform-lz" # Repository where this project is stored. 
     branch = "main"              # Name of the default repository branch. 
   }
-}
-shared_services = {
-  iac_service_principal       = "iac-serviceprincipal-deploy"       # Name of the Key Vault secret containing the workflow Service Principal name.
-  gov_managed_identity        = "gov-managedidentity-policy-deploy" # Name of the Key Vault secret containing the Managed Identity name. 
-  gov_log_analytics_workspace = "gov-policy-law"                    # Name of the Key Vault secret containing the central Log Analytics Workspace. 
-  con_hub_vnet                = "con-hub-vnet"                      # Name of the Key Vault secret containing the hub VNet in the connectivity stack. 
+  shared_services_reference = {
+    iac_service_principal_deploy = "iac-serviceprincipal-deploy"       # Name of the Key Vault secret containing the workflow Service Principal name.
+    gov_managed_identity_deploy  = "gov-managedidentity-policy-deploy" # Name of the Key Vault secret containing the Managed Identity name. 
+    gov_log_analytics_workspace  = "gov-policy-law"                    # Name of the Key Vault secret containing the central Log Analytics Workspace. 
+    con_hub_vnet                 = "con-hub-vnet"                      # Name of the Key Vault secret containing the hub VNet in the connectivity stack. 
+  }
 }
