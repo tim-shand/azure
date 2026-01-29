@@ -1,6 +1,6 @@
-# Bootstrap: Azure & GitHub Actions for Terraform IaC Management
+# 👢 Bootstrap: Azure & GitHub Actions for Terraform IaC Management
 
-## Overview
+## 🌟 Overview
 
 This deployment automates the **initial bootstrapping** process of both Azure and GitHub, in preparation for executing platform landing zone deployment workflows. 
 
@@ -10,7 +10,7 @@ This deployment automates the **initial bootstrapping** process of both Azure an
 
 ---
 
-## Requirements
+## 📝 Requirements
 
 ### Accounts/Platforms
 
@@ -44,8 +44,24 @@ Using this method help to reduce blast radius in the event unwanted subscription
 
 **Example:**  
 
-Notice that both `governance` and `identity` stack configurations below are using the **same value** for the `subscription_identifier` field.  
-The same subscription ID will be resolved by a data call using the value in the `display_name_contains` parameter. 
+```text
+# Single-Subscription Platform Landing Zone
+Subscription 1: abc-iac-sub    # Used as dedicated IaC subscription. Pass into workflow by repository variable. 
+Subscription 2: abc-platform   # General platform subscription. Used for all platform stacks in this example.
+
+# OR
+
+# Multi-Subscription Platform Landing Zone
+Subscription 1: abc-iac-sub            # Used as dedicated IaC subscription. Pass into workflow by repository variable. 
+Subscription 2: abc-platform-gen-sub   # General platform subscription. Used for governance and identity stacks in this example.
+Subscription 3: abc-platform-con-sub   # Connectivity subscription. Dedicated subscription for connectivity resources. 
+Subscription 4: abc-platform-mgt-sub   # Management subscription. Dedicated subscription for management resources. 
+```
+
+Notice that both the `governance` and `identity` stack configurations below are using the **same value** for the `subscription_identifier` field.  
+Using the same value of `platform-gen` will result in the same subscription ID being resolved and used for both stacks.  
+The subscription ID is resolved when a data call is made using the value provided by the `display_name_contains` parameter.  
+Using the name part value for the subscription helps to keep subscription IDs out of the code base. 
 
 ```hcl
 data "azurerm_subscriptions" "platform" {
@@ -57,29 +73,29 @@ platform_stacks = {
   "connectivity" = {
     stack_name              = "plz-connectivity" # STATIC: Name of stack directory and GitHub environment. 
     stack_category          = "platform"         # Backend Category: platform, workload, bootstrap. 
-    subscription_identifier = "sub-con"          # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value.  
+    subscription_identifier = "platform-con"     # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value.  
   },
   "governance" = {
     stack_name              = "plz-governance" # STATIC: Name of stack directory and GitHub environment. 
     stack_category          = "platform"       # Backend Category: platform, workload, bootstrap.
-    subscription_identifier = "platform"       # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value.
+    subscription_identifier = "platform-gen"       # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value.
   },
   "management" = {
     stack_name              = "plz-management" # STATIC: Name of stack directory and GitHub environment. 
     stack_category          = "platform"       # Backend Category: platform, workload, bootstrap. 
-    subscription_identifier = "sub-management" # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value. 
+    subscription_identifier = "platform-mgt" # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value. 
   },
   "identity" = {
     stack_name              = "plz-identity" # STATIC: Name of stack directory and GitHub environment.  
     stack_category          = "platform"     # Backend Category: platform, workload, bootstrap.
-    subscription_identifier = "platform"     # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value. 
+    subscription_identifier = "platform-gen"     # Subscription name part, resolved to ID in data call. Subscription name required to contain provided value. 
   }
 }
 ```
 
 ---
 
-## Resources
+## 🌱 Resources
 
 ### Azure: Service Principal
 
@@ -111,7 +127,7 @@ platform_stacks = {
 
 ---
 
-## Example Structure
+## ❔ Example Structure
 
 Resources are grouped by categories and their child stacks. 
 
@@ -155,7 +171,7 @@ org-iac-platform-rg
 
 ---
 
-## Usage
+## ▶️ Usage
 
 ### Create/Deploy
 
@@ -167,3 +183,11 @@ terraform -chdir="./bootstrap" plan -var-file="../variables/global.tfvars" -var-
 terraform -chdir="./bootstrap" apply -var-file="../variables/global.tfvars" -var-file="../variables/iac-bootstrap.tfvars"
 ```
 
+### Remove/Destroy
+
+```bash
+# Manual execution of Terraform
+terraform -chdir="./bootstrap" destroy -var-file="../variables/global.tfvars" -var-file="../variables/iac-bootstrap.tfvars"
+```
+
+---
